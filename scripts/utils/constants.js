@@ -1,0 +1,29 @@
+const CARD_SIZE = 490;
+const EDGE_THICKNESS = 40;
+const CONTENT_PADDING = 30;
+
+const BACKGROUND_COLOR = '#fdf7f2';
+const BODY_TEXT_COLOR = '#1f1f1f';
+const EDGE_COLORS = {
+	A: '#ff6b6b',
+	B: '#4ecdc4',
+	C: '#ffd166'
+};
+const STRIPE_COLORS = [EDGE_COLORS.A, EDGE_COLORS.B, EDGE_COLORS.C];
+const TIER_COLORS = {
+	0: '#b4bcc6',
+	1: '#6dd19c',
+	2: '#ffb169',
+	3: '#ff6b6b'
+};
+
+module.exports = {
+	CARD_SIZE,
+	EDGE_THICKNESS,
+	CONTENT_PADDING,
+	BACKGROUND_COLOR,
+	BODY_TEXT_COLOR,
+	EDGE_COLORS,
+	STRIPE_COLORS,
+	TIER_COLORS
+};
