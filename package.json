@@ -5,7 +5,8 @@
   "author": "Phil Filippak <xenohunter@pm.me>",
   "license": "MIT",
   "scripts": {
-    "generate:milestones": "node scripts/generateMilestones.js"
+    "generate:milestones": "node scripts/generateMilestones.js",
+    "generate:atlases": "node scripts/compileCardAtlases.js"
   },
   "dependencies": {
     "canvas": "^3.2.0",

@@ -7,6 +7,5 @@ This repo features the pipeline for generation of all cards for the board game B
 ```bash
 yarn install
 yarn generate:milestones
+yarn generate:atlases
 ```
-
-The script will recreate `outputs/milestones` and export a 490×490 PNG per milestone, with all card art rendered procedurally.
