@@ -21,6 +21,11 @@ const CATEGORY_COLORS = {
 	TECH: { background: '#d9f5ff', foreground: '#005d8f' },
 	MARKETING: { background: '#fff2d6', foreground: '#a35a00' }
 };
+const MISC_CARD_TYPES = [
+	{ key: 'role', label: 'Role', background: '#dceeff' },
+	{ key: 'player-deck', label: 'Player Deck', background: '#fff6cf' },
+	{ key: 'work-deck', label: 'Work Deck', background: '#ffe0df' }
+];
 
 module.exports = {
 	CARD_SIZE,
@@ -31,5 +36,6 @@ module.exports = {
 	EDGE_COLORS,
 	STRIPE_COLORS,
 	TIER_COLORS,
-	CATEGORY_COLORS
+	CATEGORY_COLORS,
+	MISC_CARD_TYPES
 };

@@ -6,8 +6,5 @@ This repo features the pipeline for generation of all cards for the board game B
 
 ```bash
 yarn install
-yarn generate:abilities
-yarn generate:features
-yarn generate:milestones
-yarn generate:atlases
+yarn generate
 ```
