@@ -6,7 +6,7 @@ const { createCanvas } = require('canvas');
 const { parse } = require('csv-parse/sync');
 
 const CARD_SIZE = 490;
-const EDGE_THICKNESS = 50;
+const EDGE_THICKNESS = 40;
 const CONTENT_PADDING = 30;
 const BACKGROUND_COLOR = '#fdf7f2';
 const BODY_TEXT_COLOR = '#1f1f1f';
@@ -75,35 +75,115 @@ function paintEdges(ctx, record) {
 		if (!value) return;
 		drawEdge(ctx, position, value);
 	});
+
+	// Draw diagonal dividers at corners
+	drawCornerDividers(ctx);
+}
+
+function drawCornerDividers(ctx) {
+	const dividerColor = '#333';
+	ctx.save();
+	ctx.strokeStyle = dividerColor;
+	ctx.lineWidth = 4;
+	const lines = [
+		[
+			{ x: 0, y: 0 },
+			{ x: EDGE_THICKNESS, y: EDGE_THICKNESS }
+		],
+		[
+			{ x: CARD_SIZE - EDGE_THICKNESS, y: EDGE_THICKNESS },
+			{ x: CARD_SIZE, y: 0 }
+		],
+		[
+			{ x: 0, y: CARD_SIZE },
+			{ x: EDGE_THICKNESS, y: CARD_SIZE - EDGE_THICKNESS }
+		],
+		[
+			{ x: CARD_SIZE - EDGE_THICKNESS, y: CARD_SIZE - EDGE_THICKNESS },
+			{ x: CARD_SIZE, y: CARD_SIZE }
+		]
+	];
+
+	lines.forEach(([start, end]) => {
+		ctx.beginPath();
+		ctx.moveTo(start.x, start.y);
+		ctx.lineTo(end.x, end.y);
+		ctx.stroke();
+	});
+	ctx.restore();
 }
 
 function drawEdge(ctx, position, code) {
 	const rect = edgeRect(position);
-	if (code === '*') {
-		drawStripedEdge(ctx, rect, position);
-		return;
-	}
+	withEdgeClip(ctx, position, () => {
+		if (code === '*') {
+			drawStripedEdge(ctx, rect, position);
+			return;
+		}
 
-	const color = EDGE_COLORS[code] || '#cbd5e0';
-	ctx.fillStyle = color;
-	ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+		const color = EDGE_COLORS[code] || '#cbd5e0';
+		ctx.fillStyle = color;
+		ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+	});
 }
 
 function drawStripedEdge(ctx, rect, position) {
-	if (position === 'north' || position === 'south') {
-		const stripeWidth = rect.width / STRIPE_COLORS.length;
-		STRIPE_COLORS.forEach((color, index) => {
-			ctx.fillStyle = color;
-			const x = rect.x + index * stripeWidth;
-			ctx.fillRect(x, rect.y, stripeWidth, rect.height);
-		});
-	} else {
-		const stripeHeight = rect.height / STRIPE_COLORS.length;
-		STRIPE_COLORS.forEach((color, index) => {
-			ctx.fillStyle = color;
-			const y = rect.y + index * stripeHeight;
-			ctx.fillRect(rect.x, y, rect.width, stripeHeight);
-		});
+	// Draw stripes as 10px wide, repeating, with diagonal dividers at corners
+	const stripeWidth = 10;
+	const stripesCount = Math.ceil((position === 'north' || position === 'south' ? rect.width : rect.height) / stripeWidth);
+	for (let i = 0; i < stripesCount; i++) {
+		const color = STRIPE_COLORS[i % STRIPE_COLORS.length];
+		ctx.fillStyle = color;
+		if (position === 'north') {
+			ctx.fillRect(rect.x + i * stripeWidth, rect.y, stripeWidth, rect.height);
+		} else if (position === 'south') {
+			ctx.fillRect(rect.x + i * stripeWidth, rect.y, stripeWidth, rect.height);
+		} else if (position === 'east') {
+			ctx.fillRect(rect.x, rect.y + i * stripeWidth, rect.width, stripeWidth);
+		} else if (position === 'west') {
+			ctx.fillRect(rect.x, rect.y + i * stripeWidth, rect.width, stripeWidth);
+		}
+	}
+}
+
+function withEdgeClip(ctx, position, drawFn) {
+	ctx.save();
+	ctx.beginPath();
+	createEdgePath(ctx, position);
+	ctx.closePath();
+	ctx.clip();
+	drawFn();
+	ctx.restore();
+}
+
+function createEdgePath(ctx, position) {
+	switch (position) {
+		case 'north':
+			ctx.moveTo(0, 0);
+			ctx.lineTo(CARD_SIZE, 0);
+			ctx.lineTo(CARD_SIZE - EDGE_THICKNESS, EDGE_THICKNESS);
+			ctx.lineTo(EDGE_THICKNESS, EDGE_THICKNESS);
+			break;
+		case 'south':
+			ctx.moveTo(EDGE_THICKNESS, CARD_SIZE - EDGE_THICKNESS);
+			ctx.lineTo(CARD_SIZE - EDGE_THICKNESS, CARD_SIZE - EDGE_THICKNESS);
+			ctx.lineTo(CARD_SIZE, CARD_SIZE);
+			ctx.lineTo(0, CARD_SIZE);
+			break;
+		case 'east':
+			ctx.moveTo(CARD_SIZE - EDGE_THICKNESS, EDGE_THICKNESS);
+			ctx.lineTo(CARD_SIZE, 0);
+			ctx.lineTo(CARD_SIZE, CARD_SIZE);
+			ctx.lineTo(CARD_SIZE - EDGE_THICKNESS, CARD_SIZE - EDGE_THICKNESS);
+			break;
+		case 'west':
+			ctx.moveTo(0, 0);
+			ctx.lineTo(EDGE_THICKNESS, EDGE_THICKNESS);
+			ctx.lineTo(EDGE_THICKNESS, CARD_SIZE - EDGE_THICKNESS);
+			ctx.lineTo(0, CARD_SIZE);
+			break;
+		default:
+			throw new Error(`Unknown edge position for clip path: ${position}`);
 	}
 }
 
@@ -127,31 +207,31 @@ function paintCopy(ctx, record) {
 	const safeZoneRight = CARD_SIZE - EDGE_THICKNESS - CONTENT_PADDING;
 	const contentWidth = safeZoneRight - safeZoneLeft;
 
-	// Title
+	// Title (smaller font)
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'top';
 	ctx.fillStyle = BODY_TEXT_COLOR;
-	ctx.font = '700 34px "Noto Sans", "Montserrat", sans-serif';
-	ctx.fillText((record.Title || '').trim(), CARD_SIZE / 2, EDGE_THICKNESS + 20);
+	ctx.font = '700 28px "Noto Sans", "Montserrat", sans-serif';
+	ctx.fillText((record.Title || '').trim(), CARD_SIZE / 2, EDGE_THICKNESS + 16);
 
 	// Divider line
 	ctx.strokeStyle = '#d9cbbd';
 	ctx.lineWidth = 2;
 	ctx.beginPath();
-	ctx.moveTo(safeZoneLeft, EDGE_THICKNESS + 70);
-	ctx.lineTo(safeZoneRight, EDGE_THICKNESS + 70);
+	ctx.moveTo(safeZoneLeft, EDGE_THICKNESS + 56);
+	ctx.lineTo(safeZoneRight, EDGE_THICKNESS + 56);
 	ctx.stroke();
 
-	// Body copy
+	// Body copy (smaller font)
 	ctx.textAlign = 'left';
-	ctx.font = '500 22px "Noto Sans", "Montserrat", sans-serif';
+	ctx.font = '500 18px "Noto Sans", "Montserrat", sans-serif';
 
 	const paragraphs = toParagraphs(record.Text);
-	let cursorY = EDGE_THICKNESS + 90;
+	let cursorY = EDGE_THICKNESS + 70;
 	paragraphs.forEach((paragraph, index) => {
-		cursorY = drawParagraph(ctx, paragraph, safeZoneLeft, cursorY, contentWidth, 30);
+		cursorY = drawParagraph(ctx, paragraph, safeZoneLeft, cursorY, contentWidth, 24);
 		if (index !== paragraphs.length - 1) {
-			cursorY += 16;
+			cursorY += 12;
 		}
 	});
 }
