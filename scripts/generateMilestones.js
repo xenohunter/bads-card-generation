@@ -226,47 +226,78 @@ function paintCopy(ctx, record) {
 	ctx.textAlign = 'left';
 	ctx.font = '500 18px "Noto Sans", "Montserrat", sans-serif';
 
-	const paragraphs = toParagraphs(record.Text);
 	let cursorY = EDGE_THICKNESS + 70;
-	paragraphs.forEach((paragraph, index) => {
-		cursorY = drawParagraph(ctx, paragraph, safeZoneLeft, cursorY, contentWidth, 24);
-		if (index !== paragraphs.length - 1) {
-			cursorY += 12;
-		}
+	cursorY = drawTextBlock(ctx, record.Text, {
+		x: safeZoneLeft,
+		y: cursorY,
+		maxWidth: contentWidth,
+		lineHeight: 24,
+		blankLineHeight: 22
 	});
+
+	const funny = record['Funny text'];
+	if (funny && funny.trim()) {
+		cursorY += 18;
+		ctx.font = 'italic 500 18px "Noto Sans", "Montserrat", sans-serif';
+		cursorY = drawTextBlock(ctx, funny, {
+			x: safeZoneLeft,
+			y: cursorY,
+			maxWidth: contentWidth,
+			lineHeight: 22,
+			blankLineHeight: 20
+		});
+	}
 }
 
-function toParagraphs(raw = '') {
-	const normalized = raw.replace(/\r/g, '').trim();
-	if (!normalized) return [];
-	return normalized
-		.split(/\n\s*\n/)
-		.map((section) => section.replace(/\s+/g, ' ').trim())
-		.filter(Boolean);
+function drawTextBlock(ctx, raw = '', options) {
+	const { x, y, maxWidth, lineHeight, blankLineHeight = lineHeight } = options;
+	const normalized = String(raw ?? '')
+		.replace(/\r/g, '')
+		.replace(/\t/g, '    ');
+	if (!normalized.trim()) {
+		return y;
+	}
+
+	const lines = normalized.split('\n');
+	let cursorY = y;
+	lines.forEach((line) => {
+		if (!line.trim()) {
+			cursorY += blankLineHeight;
+			return;
+		}
+		cursorY = drawWrappedLine(ctx, line, x, cursorY, maxWidth, lineHeight);
+	});
+	return cursorY;
 }
 
-function drawParagraph(ctx, text, x, startY, maxWidth, lineHeight) {
-	const words = text.split(/\s+/);
+function drawWrappedLine(ctx, text, x, startY, maxWidth, lineHeight) {
+	const tokens = text.match(/\S+\s*/g) || [];
 	let line = '';
 	let cursorY = startY;
 
-	words.forEach((word, index) => {
-		const testLine = line ? `${line} ${word}` : word;
+	tokens.forEach((token, index) => {
+		const testLine = line + token;
 		const metrics = ctx.measureText(testLine);
 		if (metrics.width > maxWidth && line) {
-			ctx.fillText(line, x, cursorY);
-			line = word;
+			ctx.fillText(line.trimEnd(), x, cursorY);
+			line = token.trimStart();
 			cursorY += lineHeight;
 		} else {
 			line = testLine;
 		}
 
-		if (index === words.length - 1) {
-			ctx.fillText(line, x, cursorY);
+		if (index === tokens.length - 1) {
+			ctx.fillText(line.trimEnd(), x, cursorY);
+			cursorY += lineHeight;
 		}
 	});
 
-	return cursorY + lineHeight;
+	if (!tokens.length) {
+		ctx.fillText('', x, cursorY);
+		cursorY += lineHeight;
+	}
+
+	return cursorY;
 }
 
 if (require.main === module) {
