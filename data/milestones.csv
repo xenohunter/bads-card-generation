@@ -1,0 +1,13 @@
+ID,Addon,Tier,Title,TCF,ACF,MTS,North edge,East edge,South edge,West edge,Text,Illustration,Notes
+m00.the3f,,0,"Family, Friends, and Fools",0,0,0,*,*,*,*,"They believed in you because you struck them with you vision. That is, you visually struck them.
+
+Your Product must start with a DESIGN feature.",,
+m00.legacy,,0,Legacy Pet Project,0,0,0,*,*,*,*,"Let's not even start with all that cobweb...
+
+Your product starts with a random Feature that has twice as many Tickets it should have based on its Score Points.",,
+m01.beta,,1,Beta Test,2,2,0,A,C,*,*,,,
+m01.demo,,1,Demo Version,2,2,0,*,B,*,B,,,
+m02.conference,,2,Conference,6,3,5,C,A,*,A,Everyone discards one card.,,
+m02.release,,2,Release 1.0,8,3,7,*,B,C,A,,,
+m03.valuation,,3,First Valuation,10,4,13,C,C,C,A,,,
+m03.pmf,,3,Product-Market Fit,12,4,11,B,C,A,C,,,
