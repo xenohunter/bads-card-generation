@@ -91,15 +91,26 @@ function paintCopy(ctx, record) {
 
 	// Body copy (smaller font)
 	ctx.textAlign = 'left';
-	ctx.font = '500 18px "Noto Sans", "Montserrat", sans-serif';
+	const bodyFont = '500 18px "Noto Sans", "Montserrat", sans-serif';
+	ctx.font = bodyFont;
 
 	let cursorY = EDGE_THICKNESS + 70;
+	const tierCallout = getTierCallout(record);
+	const bodyLineHeight = 24;
+	const blankLineHeight = 22;
+	if (tierCallout) {
+		ctx.font = '700 18px "Noto Sans", "Montserrat", sans-serif';
+		ctx.fillText(tierCallout, safeZoneLeft, cursorY);
+		cursorY += bodyLineHeight; // move to next line
+		cursorY += blankLineHeight; // simulate double line break
+		ctx.font = bodyFont;
+	}
 	cursorY = drawTextBlock(ctx, record.Text, {
 		x: safeZoneLeft,
 		y: cursorY,
 		maxWidth: contentWidth,
-		lineHeight: 24,
-		blankLineHeight: 22
+		lineHeight: bodyLineHeight,
+		blankLineHeight
 	});
 
 	const stats = buildStats(record);
@@ -121,6 +132,20 @@ function paintCopy(ctx, record) {
 			lineHeight: 22,
 			blankLineHeight: 20
 		});
+	}
+}
+
+function getTierCallout(record) {
+	const tier = Number(record.Tier ?? 0);
+	switch (tier) {
+		case 1:
+			return 'Regroup';
+		case 2:
+			return 'Pivot';
+		case 3:
+			return 'You win!';
+		default:
+			return '';
 	}
 }
 
