@@ -3,13 +3,11 @@ ID,Addon,Copies,Category,Title,Slot type,Counter slots,Text (SA - Special Abilit
 ,,1,TECH,Pre-Release,▢,3,You can only place counters on this Ticket when there 2 or fewer non-Completed Features in the Product.,,
 ,,1,DESIGN,Quick Hit,▢,2,,,
 ,,1,TECH,We Need A 10x Engineer!,▢,5,Only the CTO can place counters on this Ticket.,,
-,,1,TECH,API Integrations,▢,3,"If the Product has 5 or more Completed TECH Features, this Ticket is closed with just one counter.",,"Probably should be in reverse? If 3 or fewer, then API integration is fast?"
+,,1,TECH,API Integrations,▢,3,WS: Place 1 counter on this Ticket for every 5 TECH Tickets in the Word discard pile.,,"Probably should be in reverse? If 3 or fewer, then API integration is fast?"
 ,,1,DESIGN,Hard To Grasp,▢,0,"To close this Ticket, spend your action and roll a die. On 6, close it.",,
 ,,1,DESIGN,Picky Customers,✕,6,"WS: Roll a die. Place that many counters on this Ticket. Anyone can spend their action to remove one counter. At 0, close it.",,
-,,1,TECH,Microservice Architecture,▢,6,"WS: For each standalone group of Completed TECH Features, place 1 counter on this Ticket. If 6 counters or more, close this Ticket.",,"Need to reformulate the ""standalone group"" term, or use that mechanic more often so that it's in the glossary."
-,,1,DESIGN,A Dozen Of Sigma Mockups,▢,12,"WS: Place 1 counter on this Ticket for each Completed DESIGN Feature.
-
-The Designer can place 3 counters instead of 1 on this Ticket.",,
+,,1,TECH,Microservice Architecture,▢,6,"WS: For each standalone group of Completed single-Market Features, place 1 counter on this Ticket. If 6 counters or more, close this Ticket.",,"Need to reformulate the ""standalone group"" term, or use that mechanic more often so that it's in the glossary."
+,,1,DESIGN,A Dozen Of Sigma Mockups,▢,12,WS: Place 1 counter on this Ticket for each Completed Feature that has matching Markets with the Feature under this Ticket.,,
 ,,1,MARKETING,Slopification,✕,10,"Place 1 counter on this Ticket for every Open DESIGN or MARKETING Ticket (this one included; up to 10 counters).
 
 Spend your action to remove a counter from thie Ticket. At 0, close it.",,
@@ -28,7 +26,7 @@ Spend your action to remove a counter from thie Ticket. At 0, close it.",,
 ,,1,ADMIN,Basically Nothing,▢,1,,,
 ,,1,DESIGN,Generate The Logo,▢,0,"You cannot conventionally place a counter on this Ticket. Instead, spend your action and roll a die. On 6, close this Ticket.",,
 ,,1,ADMIN,Rote Work,▢,10,,,
-,,1,TECH,Merging Databases,▢,5,"WS: Place 4 counters on this Ticket. For each adjacent (on 4 sides) Completed TECH Feature, remove 1 counter.",,Probably reformulate the text.
+,,1,TECH,Merging Databases,▢,5,"WS: Place 5 counters on this Ticket. For each currently open TECH Ticket in the Product, remove 1 counter.",,Probably reformulate the text.
 ,,1,ADMIN,Just Another Ticket,▢,3,,,
 ,,1,ADMIN,Just A One-Liner,▢,2,,,
 ,,1,ADMIN,Crasher,▢,4,Discard a card every time you place counters on this Ticket.,,It was formerly called Burnout.
