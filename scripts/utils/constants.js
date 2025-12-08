@@ -26,8 +26,18 @@ const CATEGORY_COLORS = {
 	DESIGN: { background: '#ffe3f3', foreground: '#a32c68' },
 	TECH: { background: '#d9f5ff', foreground: '#005d8f' },
 	MARKETING: { background: '#fff2d6', foreground: '#a35a00' },
-	ADMIN: { background: '#f0f0f0', foreground: '#808080'}
+	ADMIN: { background: '#f0f0f0', foreground: '#808080' }
 };
+const MARKET_ORDER = ['B2B', 'AI', 'Dating', 'SaaS'];
+const MARKET_COLORS = {
+	B2B: '#6fa8dc',
+	AI: '#9900ff',
+	Dating: '#cc4125',
+	SaaS: '#93c47d'
+};
+const MARKET_INACTIVE_COLOR = '#dcd5c8';
+const MARKET_LABEL_GAP = 20;
+const MARKET_PILL_GAP = 28;
 const MISC_CARD_TYPES = [
 	{ key: 'role', label: 'Role', background: '#dceeff', textColor: '#0c356b', width: ROLE_CARD_WIDTH, height: ROLE_CARD_HEIGHT },
 	{ key: 'player-deck', label: 'Player Deck', background: '#fff6cf' },
@@ -50,5 +60,10 @@ module.exports = {
 	STRIPE_COLORS,
 	TIER_COLORS,
 	CATEGORY_COLORS,
+	MARKET_ORDER,
+	MARKET_COLORS,
+	MARKET_INACTIVE_COLOR,
+	MARKET_LABEL_GAP,
+	MARKET_PILL_GAP,
 	MISC_CARD_TYPES
 };

@@ -10,10 +10,15 @@ const {
 	CONTENT_PADDING,
 	BACKGROUND_COLOR,
 	BODY_TEXT_COLOR,
-	CATEGORY_COLORS
+	MARKET_ORDER,
+	MARKET_COLORS,
+	MARKET_INACTIVE_COLOR,
+	MARKET_LABEL_GAP,
+	MARKET_PILL_GAP
 } = require('./utils/constants');
 const { shouldIgnoreRecord } = require('./utils/recordFilters');
 const { paintEdgesAndDividers } = require('./utils/edgePainter');
+const MARKET_LABEL_FONT = '700 20px "Roboto Mono", "Courier New", monospace';
 
 async function main() {
 	const csvPath = path.resolve(__dirname, '../data/features.csv');
@@ -105,42 +110,12 @@ function paintFeatureContent(ctx, record) {
 }
 
 function paintHeaderRow(ctx, record, safeZoneLeft, safeZoneRight) {
-	const category = (record.Category || 'ERROR!!!').trim().toUpperCase();
-	const categoryColors = CATEGORY_COLORS[category] || { background: '#edf2f7', foreground: '#2d3748' };
-	const badgeY = EDGE_THICKNESS + 12;
-	const badgePaddingX = 14;
-	const badgeHeight = 36;
-
-	ctx.font = '700 18px "Montserrat", sans-serif';
-	const badgeWidth = ctx.measureText(category || 'GENERAL').width + badgePaddingX * 2;
-	ctx.fillStyle = categoryColors.background;
-	drawRoundedRect(ctx, safeZoneLeft, badgeY, badgeWidth, badgeHeight, 12);
-
-	ctx.fillStyle = categoryColors.foreground;
-	ctx.textAlign = 'left';
-	ctx.textBaseline = 'middle';
-	ctx.fillText(category || 'GENERAL', safeZoneLeft + badgePaddingX, badgeY + badgeHeight / 2);
-
+	const markets = parseMarkets(record);
 	const scoreValue = formatScore(record['Score Points']);
-	const pillPaddingX = 18;
-	const pillHeight = 44;
-	ctx.font = '700 24px "Montserrat", sans-serif';
-	const scoreValueWidth = ctx.measureText(scoreValue).width;
-	const pillWidth = scoreValueWidth + pillPaddingX * 2;
-	const pillX = safeZoneRight - pillWidth;
-	const pillY = badgeY - 4;
-
-	ctx.fillStyle = '#fff';
-	ctx.strokeStyle = '#d8cbbb';
-	ctx.lineWidth = 2;
-	drawRoundedRect(ctx, pillX, pillY, pillWidth, pillHeight, 14, true);
-
-	ctx.fillStyle = '#a0692b';
-	ctx.textAlign = 'center';
-	ctx.textBaseline = 'middle';
-	ctx.fillText(scoreValue, pillX + pillWidth / 2, pillY + pillHeight / 2);
-
-	return Math.max(badgeY + badgeHeight, pillY + pillHeight);
+	const pillMetrics = measureScorePill(ctx, scoreValue);
+	const marketBottom = drawMarketRow(ctx, markets, safeZoneLeft, safeZoneRight, pillMetrics.width);
+	const scoreBottom = drawScorePill(ctx, scoreValue, safeZoneRight, pillMetrics);
+	return Math.max(marketBottom, scoreBottom);
 }
 
 function drawRoundedRect(ctx, x, y, width, height, radius, stroke = false) {
@@ -235,6 +210,105 @@ function normalizeCopies(value) {
 
 function sanitizeFileName(value) {
 	return value.replace(/[^a-z0-9._-]+/gi, '_');
+}
+
+function drawMarketRow(ctx, markets, safeZoneLeft, safeZoneRight, pillWidth) {
+	const rowTop = EDGE_THICKNESS + 12;
+	const rowHeight = 36;
+	const highlights = new Set(markets);
+	const maxRowRight = safeZoneRight - pillWidth - MARKET_PILL_GAP;
+	let cursorX = safeZoneLeft;
+
+	ctx.save();
+	ctx.font = MARKET_LABEL_FONT;
+	ctx.textAlign = 'left';
+	ctx.textBaseline = 'top';
+
+	MARKET_ORDER.forEach((market, index) => {
+		cursorX = Math.min(cursorX, maxRowRight);
+		const isActive = highlights.has(market);
+		const color = isActive ? MARKET_COLORS[market] || BODY_TEXT_COLOR : MARKET_INACTIVE_COLOR;
+		ctx.fillStyle = color;
+		ctx.fillText(market, cursorX, rowTop);
+		const width = ctx.measureText(market).width;
+		const underlineY = rowTop + 24;
+		ctx.strokeStyle = color;
+		ctx.lineWidth = 2;
+		ctx.beginPath();
+		ctx.moveTo(cursorX, underlineY);
+		ctx.lineTo(cursorX + width, underlineY);
+		ctx.stroke();
+		cursorX += width + (index === MARKET_ORDER.length - 1 ? MARKET_PILL_GAP : MARKET_LABEL_GAP);
+	});
+
+	ctx.restore();
+	return rowTop + rowHeight;
+}
+
+function drawScorePill(ctx, scoreValue, safeZoneRight, metrics) {
+	const pillX = safeZoneRight - metrics.width;
+	const pillY = EDGE_THICKNESS + 6;
+
+	ctx.fillStyle = '#fff';
+	ctx.strokeStyle = '#d8cbbb';
+	ctx.lineWidth = 2;
+	drawRoundedRect(ctx, pillX, pillY, metrics.width, metrics.height, 14, true);
+
+	ctx.fillStyle = '#a0692b';
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+	ctx.font = '700 24px "Montserrat", sans-serif';
+	ctx.fillText(scoreValue, pillX + metrics.width / 2, pillY + metrics.height / 2);
+
+	return pillY + metrics.height;
+}
+
+function parseMarkets(record) {
+	const raw = String(record.Markets ?? '').trim();
+	if (!raw) {
+		return [];
+	}
+
+	const tokens = raw.split(',').map((token) => normalizeMarketName(token)).filter(Boolean);
+	const seen = new Set();
+	const normalized = [];
+	tokens.forEach((market) => {
+		if (seen.has(market)) {
+			return;
+		}
+		seen.add(market);
+		normalized.push(market);
+	});
+	return normalized;
+}
+
+function measureScorePill(ctx, scoreValue) {
+	ctx.save();
+	ctx.font = '700 24px "Montserrat", sans-serif';
+	const scoreWidth = ctx.measureText(scoreValue).width;
+	ctx.restore();
+	const pillPaddingX = 18;
+	const pillHeight = 44;
+	return {
+		width: scoreWidth + pillPaddingX * 2,
+		height: pillHeight
+	};
+}
+
+function normalizeMarketName(value = '') {
+	const upper = String(value).trim().toUpperCase();
+	switch (upper) {
+		case 'B2B':
+			return 'B2B';
+		case 'AI':
+			return 'AI';
+		case 'DATING':
+			return 'Dating';
+		case 'SAAS':
+			return 'SaaS';
+		default:
+			return null;
+	}
 }
 
 if (require.main === module) {
