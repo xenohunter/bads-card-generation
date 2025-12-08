@@ -9,11 +9,11 @@ ID,Addon,Score Points,Markets,Title,North edge,East edge,South edge,West edge,"T
 ,,1,"B2B, Dating",Landing Page,*,A,B,C,,,
 ,,1,B2B,Press Release,C,A,C,*,,,
 ,,2,"Dating, SaaS",Cloud Database,C,A,B,*,,,"Isn't it boring, having cards like that for all categories?"
-,,2,SaaS,Revamp,B,B,A,*,"⬇️: Disregard the Story Points when placing Tickets on this card. Instead, put as many Tickets on it as there are completed TECH Features.",,
+,,2,SaaS,Revamp,B,B,A,*,"⬇️: Disregard the Story Points when placing Tickets on this card. Instead, put as many Tickets on it as there are completed Features.",,
 ,,2,"B2B, AI",Brand Book,B,C,*,A,,,
 ,,2,"B2B, SaaS",Campaign Template,*,A,A,B,,,
 ,,3,"AI, Dating",LLMs Doing The Job,A,*,B,C,"🅰️: Roll a die. On 5-6, close the cheapest TECH Ticket. On 1-4, remove 1 counter from every TECH Ticket.",,
-,,3,"AI, Dating",Collab With Ony Jive,A,C,*,A,✅: All other DESIGN Features get one new Ticket each.,,
+,,3,"AI, Dating",Collab With Ony Jive,A,C,*,A,✅: All other AI or Dating Features get one new Ticket each.,,
 ,,3,"Dating, SaaS",[Untitled Feature 02],A,B,B,C,,,
 ,,4,"AI, B2B",AA: Artificial Analyst,B,C,A,C,🅰️: Relocate up to 2 counters to a Ticket belonging to a different category.,,
 ,,4,"B2B, Dating",Vanity Fair,C,A,A,C,"🅰️: When drawing a card, you can discard it right away without looking at it and place 2 counters on any Ticket instead. That won't spend your action.",,

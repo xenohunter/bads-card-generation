@@ -12,6 +12,7 @@ const {
 	BODY_TEXT_COLOR,
 	MARKET_ORDER,
 	MARKET_COLORS,
+	MARKET_PILL_BACKGROUNDS,
 	MARKET_INACTIVE_COLOR,
 	MARKET_LABEL_GAP,
 	MARKET_PILL_GAP
@@ -228,17 +229,29 @@ function drawMarketRow(ctx, markets, safeZoneLeft, safeZoneRight, pillWidth) {
 		cursorX = Math.min(cursorX, maxRowRight);
 		const isActive = highlights.has(market);
 		const color = isActive ? MARKET_COLORS[market] || BODY_TEXT_COLOR : MARKET_INACTIVE_COLOR;
+		const text = market;
+		const labelWidth = ctx.measureText(text).width;
+		if (isActive) {
+			const pillPaddingX = 8;
+			const pillPaddingY = 4;
+			const pillRadius = 8;
+			const pillTop = rowTop - pillPaddingY;
+			const pillLeft = cursorX - pillPaddingX;
+			const pillWidth = labelWidth + pillPaddingX * 2;
+			const pillHeight = 24 + pillPaddingY * 2;
+			ctx.fillStyle = MARKET_PILL_BACKGROUNDS[market] || '#f5f1eb';
+			drawRoundedRect(ctx, pillLeft, pillTop, pillWidth, pillHeight, pillRadius);
+		}
 		ctx.fillStyle = color;
-		ctx.fillText(market, cursorX, rowTop);
-		const width = ctx.measureText(market).width;
+		ctx.fillText(text, cursorX, rowTop);
 		const underlineY = rowTop + 24;
 		ctx.strokeStyle = color;
 		ctx.lineWidth = 2;
 		ctx.beginPath();
 		ctx.moveTo(cursorX, underlineY);
-		ctx.lineTo(cursorX + width, underlineY);
+		ctx.lineTo(cursorX + labelWidth, underlineY);
 		ctx.stroke();
-		cursorX += width + (index === MARKET_ORDER.length - 1 ? MARKET_PILL_GAP : MARKET_LABEL_GAP);
+		cursorX += labelWidth + (index === MARKET_ORDER.length - 1 ? MARKET_PILL_GAP : MARKET_LABEL_GAP);
 	});
 
 	ctx.restore();
