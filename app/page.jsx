@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import LocaleAssetSwitcher from './components/AtlasLocaleSwitcher';
 
 const ATLASES_DIR = path.join(process.cwd(), 'public', 'atlases');
 const MISC_DIR = path.join(process.cwd(), 'public', 'misc');
@@ -17,65 +18,86 @@ async function readDirectorySafe(dir) {
 }
 
 function extractCardCount(fileName) {
-	const match = fileName.match(/-count-(\d+)\.png$/i);
+	const match = fileName.match(/-count-(\d+)(?:-[a-z]+)?\.png$/i);
 	return match ? Number(match[1]) : null;
 }
 
-export default async function HomePage() {
-	const [atlasFiles, miscFiles] = await Promise.all([
-		readDirectorySafe(ATLASES_DIR),
-		readDirectorySafe(MISC_DIR)
+async function readLocaleDirectories(dir) {
+	try {
+		const entries = await fs.readdir(dir, { withFileTypes: true });
+		return entries
+			.filter((entry) => entry.isDirectory())
+			.map((entry) => entry.name)
+			.sort();
+	} catch (error) {
+		if (error.code === 'ENOENT') {
+			return [];
+		}
+		throw error;
+	}
+}
+
+function mapAtlasFiles(files) {
+	return files.map((file) => ({
+		name: file,
+		cardCount: extractCardCount(file)
+	}));
+}
+
+async function collectAssetsByLocale() {
+	const [atlasLocales, miscLocales] = await Promise.all([
+		readLocaleDirectories(ATLASES_DIR),
+		readLocaleDirectories(MISC_DIR)
 	]);
+	const localeSet = new Set([...atlasLocales, ...miscLocales]);
+	const locales = Array.from(localeSet).sort();
+
+	if (!locales.length) {
+		const [rootAtlases, rootMisc] = await Promise.all([
+			readDirectorySafe(ATLASES_DIR),
+			readDirectorySafe(MISC_DIR)
+		]);
+		if (!rootAtlases.length && !rootMisc.length) {
+			return {};
+		}
+		return {
+			default: {
+				atlases: mapAtlasFiles(rootAtlases),
+				misc: rootMisc
+			}
+		};
+	}
+
+	const entries = {};
+	await Promise.all(
+		locales.map(async (locale) => {
+			const [atlases, misc] = await Promise.all([
+				readDirectorySafe(path.join(ATLASES_DIR, locale)),
+				readDirectorySafe(path.join(MISC_DIR, locale))
+			]);
+			entries[locale] = {
+				atlases: mapAtlasFiles(atlases),
+				misc: misc
+			};
+		})
+	);
+	return entries;
+}
+
+export default async function HomePage() {
+	const assetsByLocale = await collectAssetsByLocale();
 
 	return (
 		<main>
 			<header>
 				<h1>Card Atlases & Misc Assets</h1>
 				<p>
-					These PNG files are generated during the Vercel build. Click any link below to download the raw,
-					unoptimized artwork.
+					These PNG files are generated during the Vercel build. Use the locale switcher to grab the English or
+					Russian variants of each atlas bundle.
 				</p>
 			</header>
 
-			<section>
-				<h2>Atlases</h2>
-				{atlasFiles.length === 0 ? (
-					<p>No atlases have been generated yet.</p>
-				) : (
-					<ul>
-						{atlasFiles.map((file) => {
-							const cardCount = extractCardCount(file);
-							return (
-								<li key={file}>
-									<a href={`/atlases/${file}`} target="_blank" rel="noopener noreferrer">
-										{file}
-									</a>{' '}
-									<span className="badge">
-										{cardCount ? `${cardCount} cards` : 'card count unknown'}
-									</span>
-								</li>
-							);
-						})}
-					</ul>
-				)}
-			</section>
-
-			<section>
-				<h2>Misc Assets</h2>
-				{miscFiles.length === 0 ? (
-					<p>No misc files have been generated yet.</p>
-				) : (
-					<ul>
-						{miscFiles.map((file) => (
-							<li key={file}>
-								<a href={`/misc/${file}`} target="_blank" rel="noopener noreferrer">
-									{file}
-								</a>
-							</li>
-						))}
-					</ul>
-				)}
-			</section>
+			<LocaleAssetSwitcher assetsByLocale={assetsByLocale} />
 		</main>
 	);
 }

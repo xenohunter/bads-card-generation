@@ -8,10 +8,13 @@
     "dev": "next dev",
     "build": "yarn generate && next build",
     "start": "next start",
-  "generate": "yarn generate:en && yarn sync:public && yarn generate:ru",
-  "generate:en": "OUTPUT_ROOT=outputs LOCALE=en yarn generate:assets",
-  "generate:ru": "OUTPUT_ROOT=outputs_ru LOCALE=ru yarn generate:assets",
-  "generate:assets": "yarn generate:abilities && yarn generate:features && yarn generate:milestones && yarn generate:roles && yarn generate:misc && yarn generate:tickets && yarn generate:problems && yarn generate:blanks && yarn generate:atlases && yarn generate:print",
+  "generate": "yarn generate:en && yarn sync:public:en && yarn generate:ru && yarn sync:public:ru",
+    "generate:en": "OUTPUT_ROOT=outputs LOCALE=en yarn generate:assets",
+    "generate:ru": "OUTPUT_ROOT=outputs_ru LOCALE=ru yarn generate:assets",
+    "generate:assets": "yarn generate:abilities && yarn generate:features && yarn generate:milestones && yarn generate:roles && yarn generate:misc && yarn generate:tickets && yarn generate:problems && yarn generate:blanks && yarn generate:atlases",
+    "generate-print": "yarn generate:print:en && yarn generate:print:ru",
+    "generate:print:en": "OUTPUT_ROOT=outputs LOCALE=en yarn generate:print",
+    "generate:print:ru": "OUTPUT_ROOT=outputs_ru LOCALE=ru yarn generate:print",
     "generate:milestones": "node scripts/generateMilestones.js",
     "generate:features": "node scripts/generateFeatures.js",
     "generate:abilities": "node scripts/generateAbilities.js",
@@ -22,7 +25,9 @@
     "generate:blanks": "node scripts/generateEmptyCards.js",
     "generate:atlases": "node scripts/compileCardAtlases.js",
     "generate:print": "node scripts/compilePrintSheets.js",
-    "sync:public": "node scripts/syncStaticAssets.js"
+    "sync:public": "node scripts/syncStaticAssets.js",
+    "sync:public:en": "OUTPUT_ROOT=outputs LOCALE=en yarn sync:public",
+    "sync:public:ru": "OUTPUT_ROOT=outputs_ru LOCALE=ru yarn sync:public"
   },
   "dependencies": {
     "canvas": "^3.2.0",

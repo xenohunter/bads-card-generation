@@ -2,12 +2,13 @@
 
 const path = require('path');
 const fs = require('fs/promises');
-const { resolveOutputPath, PROJECT_ROOT } = require('./utils/runtimeConfig');
+const { resolveOutputPath, PROJECT_ROOT, LOCALE } = require('./utils/runtimeConfig');
 
 const PUBLIC_ROOT = path.join(PROJECT_ROOT, 'public');
+const localeTag = (LOCALE || 'default').toLowerCase();
 const PAIRS = [
-	{ src: resolveOutputPath('atlases'), dest: path.join(PUBLIC_ROOT, 'atlases') },
-	{ src: resolveOutputPath('misc'), dest: path.join(PUBLIC_ROOT, 'misc') }
+	{ src: resolveOutputPath('atlases'), dest: path.join(PUBLIC_ROOT, 'atlases', localeTag) },
+	{ src: resolveOutputPath('misc'), dest: path.join(PUBLIC_ROOT, 'misc', localeTag) }
 ];
 
 async function main() {

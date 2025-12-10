@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const { createCanvas, loadImage } = require('canvas');
 const { CARD_SIZE, ROLE_CARD_WIDTH, ROLE_CARD_HEIGHT, TICKET_CARD_SIZE } = require('./utils/constants');
-const { resolveOutputPath } = require('./utils/runtimeConfig');
+const { resolveOutputPath, LOCALE } = require('./utils/runtimeConfig');
 
 const ATLAS_COLUMNS = 10;
 const ATLAS_ROWS = 7;
@@ -113,6 +113,7 @@ async function buildAtlases({ prefix, cards, srcDir, destDir, cardWidth, cardHei
 	}
 
 	const atlasCount = Math.ceil(cards.length / CARDS_PER_ATLAS);
+	const localeTag = (LOCALE || 'default').toLowerCase();
 	for (let atlasIndex = 0; atlasIndex < atlasCount; atlasIndex++) {
 		const sliceStart = atlasIndex * CARDS_PER_ATLAS;
 		const sliceEnd = sliceStart + CARDS_PER_ATLAS;
@@ -133,7 +134,7 @@ async function buildAtlases({ prefix, cards, srcDir, destDir, cardWidth, cardHei
 		);
 
 		const cardCount = batch.length;
-		const atlasName = `${prefix}-${String(atlasIndex + 1).padStart(2, '0')}-count-${cardCount}.png`;
+		const atlasName = `${prefix}-${String(atlasIndex + 1).padStart(2, '0')}-count-${cardCount}-${localeTag}.png`;
 		const atlasPath = path.join(destDir, atlasName);
 		await fs.writeFile(atlasPath, canvas.toBuffer('image/png'));
 		console.log(`Saved ${atlasName} with ${batch.length} cards.`);

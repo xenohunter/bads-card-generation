@@ -6,7 +6,7 @@ const fsSync = require('fs');
 const { createCanvas, loadImage } = require('canvas');
 const PDFDocument = require('pdfkit');
 const { CARD_SIZE, ROLE_CARD_WIDTH, ROLE_CARD_HEIGHT, TICKET_CARD_SIZE } = require('./utils/constants');
-const { resolveOutputPath } = require('./utils/runtimeConfig');
+const { resolveOutputPath, LOCALE } = require('./utils/runtimeConfig');
 
 const PRINT_DPI = 300;
 const MM_PER_INCH = 25.4;
@@ -158,7 +158,9 @@ async function main() {
 		return;
 	}
 
-	const pdfPath = path.join(printDir, 'bads-double-sided-cards.pdf');
+	const localeTag = (LOCALE || 'default').toLowerCase();
+	const pdfFileName = `bads-double-sided-cards-${localeTag}.pdf`;
+	const pdfPath = path.join(printDir, pdfFileName);
 	await writePdf(pdfPath, pdfPages);
 	printSummary(sheetSummaries, pdfPath);
 }

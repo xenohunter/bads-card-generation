@@ -17,6 +17,8 @@ To build a single locale manually you can run the shared asset chain with custom
 OUTPUT_ROOT=outputs_ru LOCALE=ru yarn generate:assets
 ```
 
+Every locale pass copies its atlases and misc assets into `public/atlases/<locale>` and `public/misc/<locale>` respectively. The Next.js app surfaces these folders through the locale switcher at the top of the page.
+
 When needed, you can run the generators individually:
 
 ```bash
@@ -30,11 +32,14 @@ yarn generate:problems
 yarn generate:blanks
 yarn generate:atlases
 yarn generate:print
+yarn generate-print
 ```
 
 ### Print-ready sheets
 
-`yarn generate:print` arranges every card face together with the correct back on portrait A4 sheets inside `outputs/print`. Each sheet is exported as a PNG pair (`sheet-XXX-front/back.png`), and the full set is bundled into `outputs/print/bads-double-sided-cards.pdf` in front/back order. Print double-sided with "flip on long edge" to keep the backs aligned after cutting.
+`yarn generate:print` arranges every card face together with the correct back on portrait A4 sheets inside `outputs/print`. Each sheet is exported as a PNG pair (`sheet-XXX-front/back.png`), and the full set is bundled into `outputs/print/bads-double-sided-cards-<locale>.pdf` in front/back order. Print double-sided with "flip on long edge" to keep the backs aligned after cutting.
+
+Use `yarn generate-print` to render both locales back-to-back; it runs the same print compiler for `outputs/` (English) and `outputs_ru/` (Russian), emitting PDFs with `-en` / `-ru` suffixes respectively.
 
 When the RU locale runs, the same layout logic places its sheets inside `outputs_ru/print` while still referencing the localized copy from `RU Text`.
 
