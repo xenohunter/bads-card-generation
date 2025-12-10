@@ -51,13 +51,14 @@ async function main() {
 	console.log(`Generated ${tasks.length} feature cards in ${outputDir}`);
 }
 
-async function drawFeatureCard(filePath, record) {
+async function drawFeatureCard(filePath, record, options = {}) {
+	const isBlank = options.blank === true || record.__blank === true;
 	const canvas = createCanvas(CARD_SIZE, CARD_SIZE);
 	const ctx = canvas.getContext('2d');
 
 	paintBackground(ctx);
 	paintEdgesAndDividers(ctx, record);
-	paintFeatureContent(ctx, record);
+	paintFeatureContent(ctx, record, { isBlank });
 
 	await fs.writeFile(filePath, canvas.toBuffer('image/png'));
 }
@@ -71,10 +72,13 @@ function paintBackground(ctx) {
 	ctx.strokeRect(EDGE_THICKNESS / 2, EDGE_THICKNESS / 2, CARD_SIZE - EDGE_THICKNESS, CARD_SIZE - EDGE_THICKNESS);
 }
 
-function paintFeatureContent(ctx, record) {
+function paintFeatureContent(ctx, record, { isBlank = false } = {}) {
 	const safeZoneLeft = EDGE_THICKNESS + CONTENT_PADDING;
 	const safeZoneRight = CARD_SIZE - EDGE_THICKNESS - CONTENT_PADDING;
-	const headerBottom = paintHeaderRow(ctx, record, safeZoneLeft, safeZoneRight);
+	const headerBottom = paintHeaderRow(ctx, record, safeZoneLeft, safeZoneRight, { isBlank });
+	if (isBlank) {
+		return;
+	}
 
 	const title = (record.Title || 'Untitled Feature').trim();
 	ctx.fillStyle = BODY_TEXT_COLOR;
@@ -110,12 +114,14 @@ function paintFeatureContent(ctx, record) {
 	}
 }
 
-function paintHeaderRow(ctx, record, safeZoneLeft, safeZoneRight) {
+function paintHeaderRow(ctx, record, safeZoneLeft, safeZoneRight, { isBlank = false } = {}) {
 	const markets = parseMarkets(record);
-	const scoreValue = formatScore(record['Score Points']);
+	const scoreValue = isBlank ? '' : formatScore(record['Score Points']);
 	const pillMetrics = measureScorePill(ctx, scoreValue);
-	const marketBottom = drawMarketRow(ctx, markets, safeZoneLeft, safeZoneRight, pillMetrics.width);
-	const scoreBottom = drawScorePill(ctx, scoreValue, safeZoneRight, pillMetrics);
+	const marketBottom = isBlank
+		? EDGE_THICKNESS + 12
+		: drawMarketRow(ctx, markets, safeZoneLeft, safeZoneRight, pillMetrics.width);
+	const scoreBottom = drawScorePill(ctx, scoreValue, safeZoneRight, pillMetrics, { isBlank });
 	return Math.max(marketBottom, scoreBottom);
 }
 
@@ -258,7 +264,7 @@ function drawMarketRow(ctx, markets, safeZoneLeft, safeZoneRight, pillWidth) {
 	return rowTop + rowHeight;
 }
 
-function drawScorePill(ctx, scoreValue, safeZoneRight, metrics) {
+function drawScorePill(ctx, scoreValue, safeZoneRight, metrics, { isBlank = false } = {}) {
 	const pillX = safeZoneRight - metrics.width;
 	const pillY = EDGE_THICKNESS + 6;
 
@@ -267,11 +273,13 @@ function drawScorePill(ctx, scoreValue, safeZoneRight, metrics) {
 	ctx.lineWidth = 2;
 	drawRoundedRect(ctx, pillX, pillY, metrics.width, metrics.height, 14, true);
 
-	ctx.fillStyle = '#a0692b';
-	ctx.textAlign = 'center';
-	ctx.textBaseline = 'middle';
-	ctx.font = '700 24px "Montserrat", sans-serif';
-	ctx.fillText(scoreValue, pillX + metrics.width / 2, pillY + metrics.height / 2);
+	if (!isBlank && String(scoreValue || '').trim()) {
+		ctx.fillStyle = '#a0692b';
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.font = '700 24px "Montserrat", sans-serif';
+		ctx.fillText(scoreValue, pillX + metrics.width / 2, pillY + metrics.height / 2);
+	}
 
 	return pillY + metrics.height;
 }
@@ -330,3 +338,7 @@ if (require.main === module) {
 		process.exitCode = 1;
 	});
 }
+
+module.exports = {
+	drawFeatureCard
+};

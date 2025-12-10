@@ -20,6 +20,8 @@ const A4_HEIGHT_PT = (A4_HEIGHT_MM / MM_PER_INCH) * POINTS_PER_INCH;
 
 const DEFAULT_MARGIN = Math.round(PRINT_DPI * 0.35); // ~9 mm
 const DEFAULT_GAP = Math.round(PRINT_DPI * 0.08); // ~2 mm
+const EXTRA_EMPTY_SHEETS = 1;
+const MISC_OUTPUT_DIR = path.resolve(__dirname, '../outputs/misc');
 
 const PLAYER_CARD_SIZE_MM = 85;
 const WORK_CARD_SIZE_MM = 78;
@@ -36,7 +38,9 @@ const PRINT_SETS = [
 		cardHeight: CARD_SIZE,
 		printWidthMM: PLAYER_CARD_SIZE_MM,
 		printHeightMM: PLAYER_CARD_SIZE_MM,
-		backStrategy: { type: 'pairedPrefix', prefix: 'back-' }
+		backStrategy: { type: 'pairedPrefix', prefix: 'back-' },
+		emptyCardPath: path.join(MISC_OUTPUT_DIR, 'milestone-empty-front.png'),
+		emptyCardBackPath: path.join(MISC_OUTPUT_DIR, 'milestone-empty-back.png')
 	},
 	{
 		key: 'features',
@@ -47,7 +51,8 @@ const PRINT_SETS = [
 		cardHeight: CARD_SIZE,
 		printWidthMM: PLAYER_CARD_SIZE_MM,
 		printHeightMM: PLAYER_CARD_SIZE_MM,
-		backStrategy: { type: 'staticImage', path: path.resolve(__dirname, '../outputs/misc/player-deck.png') }
+		backStrategy: { type: 'staticImage', path: path.resolve(__dirname, '../outputs/misc/player-deck.png') },
+		emptyCardPath: path.join(MISC_OUTPUT_DIR, 'feature-empty.png')
 	},
 	{
 		key: 'abilities',
@@ -58,7 +63,8 @@ const PRINT_SETS = [
 		cardHeight: CARD_SIZE,
 		printWidthMM: PLAYER_CARD_SIZE_MM,
 		printHeightMM: PLAYER_CARD_SIZE_MM,
-		backStrategy: { type: 'staticImage', path: path.resolve(__dirname, '../outputs/misc/player-deck.png') }
+		backStrategy: { type: 'staticImage', path: path.resolve(__dirname, '../outputs/misc/player-deck.png') },
+		emptyCardPath: path.join(MISC_OUTPUT_DIR, 'ability-empty.png')
 	},
 	{
 		key: 'roles',
@@ -69,7 +75,8 @@ const PRINT_SETS = [
 		cardHeight: ROLE_CARD_HEIGHT,
 		printWidthMM: ROLE_CARD_WIDTH_MM,
 		printHeightMM: ROLE_CARD_HEIGHT_MM,
-		backStrategy: { type: 'staticImage', path: path.resolve(__dirname, '../outputs/misc/role.png') }
+		backStrategy: { type: 'staticImage', path: path.resolve(__dirname, '../outputs/misc/role.png') },
+		emptyCardPath: path.join(MISC_OUTPUT_DIR, 'role-empty.png')
 	},
 	{
 		key: 'tickets',
@@ -80,7 +87,8 @@ const PRINT_SETS = [
 		cardHeight: TICKET_CARD_SIZE,
 		printWidthMM: WORK_CARD_SIZE_MM,
 		printHeightMM: WORK_CARD_SIZE_MM,
-		backStrategy: { type: 'staticImage', path: path.resolve(__dirname, '../outputs/misc/work-deck.png') }
+		backStrategy: { type: 'staticImage', path: path.resolve(__dirname, '../outputs/misc/work-deck.png') },
+		emptyCardPath: path.join(MISC_OUTPUT_DIR, 'ticket-empty.png')
 	},
 	{
 		key: 'problems',
@@ -91,7 +99,8 @@ const PRINT_SETS = [
 		cardHeight: TICKET_CARD_SIZE,
 		printWidthMM: WORK_CARD_SIZE_MM,
 		printHeightMM: WORK_CARD_SIZE_MM,
-		backStrategy: { type: 'staticImage', path: path.resolve(__dirname, '../outputs/misc/work-deck.png') }
+		backStrategy: { type: 'staticImage', path: path.resolve(__dirname, '../outputs/misc/work-deck.png') },
+		emptyCardPath: path.join(MISC_OUTPUT_DIR, 'problem-empty.png')
 	}
 ];
 
@@ -114,8 +123,14 @@ async function main() {
 		}
 
 		const layout = buildLayout(group);
-		const batches = chunk(cards, layout.cardsPerSheet);
-		console.log(`Preparing ${batches.length} sheet(s) for ${group.label} (${cards.length} cards).`);
+		const fillerFactory = createEmptyCardFactory(group);
+		const batches = chunk(cards, layout.cardsPerSheet).map((batch) => padBatch(batch, layout.cardsPerSheet, fillerFactory));
+		if (fillerFactory) {
+			for (let extra = 0; extra < EXTRA_EMPTY_SHEETS; extra++) {
+				batches.push(createFullFillerBatch(layout.cardsPerSheet, fillerFactory));
+			}
+		}
+		console.log(`Preparing ${batches.length} sheet(s) for ${group.label} (${cards.length} cards + fillers).`);
 
 		for (const batch of batches) {
 			const sheetId = `${String(sheetIndex).padStart(3, '0')}-${group.key}`;
@@ -265,6 +280,57 @@ function computePositionsForBatch(count, layout) {
 	}
 
 	return positions;
+}
+
+function padBatch(batch, targetSize, fillerFactory) {
+	if (!fillerFactory) {
+		return batch;
+	}
+	const result = [...batch];
+	while (result.length < targetSize) {
+		result.push(fillerFactory());
+	}
+	return result;
+}
+
+function createFullFillerBatch(count, fillerFactory) {
+	const result = [];
+	for (let i = 0; i < count; i++) {
+		result.push(fillerFactory());
+	}
+	return result;
+}
+
+function createEmptyCardFactory(group) {
+	if (!group.emptyCardPath) {
+		return null;
+	}
+
+	const frontPath = group.emptyCardPath;
+	let backPath = group.emptyCardBackPath;
+
+	assertFileSync(frontPath, `Missing empty card template for ${group.label} at ${frontPath}`);
+	if (backPath) {
+		assertFileSync(backPath, `Missing empty card back template for ${group.label} at ${backPath}`);
+	}
+
+	if (!backPath) {
+		if (group.backStrategy?.type === 'staticImage') {
+			backPath = group.backStrategy.path;
+		} else {
+			backPath = frontPath;
+		}
+	}
+
+	return () => ({ frontPath, backPath, isFiller: true });
+}
+
+function assertFileSync(targetPath, message) {
+	try {
+		fsSync.accessSync(targetPath, fsSync.constants.R_OK);
+	} catch (error) {
+		throw new Error(message);
+	}
 }
 
 async function renderSheetPair(batch, layout) {

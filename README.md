@@ -19,6 +19,7 @@ yarn generate:roles
 yarn generate:misc
 yarn generate:tickets
 yarn generate:problems
+yarn generate:blanks
 yarn generate:atlases
 yarn generate:print
 ```
@@ -30,3 +31,4 @@ yarn generate:print
 - Feature & ability cards now carry the Player Deck back and print at roughly 85×85 mm.
 - Ticket & problem cards stay on the Work Deck back but print at ~78×78 mm so they remain slightly smaller than feature cards (the colored edge stays visible when stacked).
 - Role cards expand to about 75×100 mm to give them a more premium footprint.
+- The blank template generator (`yarn generate:blanks`) creates one "empty" version of each card type without title/text. The print compiler uses these files to pad every sheet to a full grid and also adds one extra all-empty sheet per card family (see `EXTRA_EMPTY_SHEETS` in `scripts/compilePrintSheets.js`). Use the spare cards to hand-write quick prototypes or replacements when playtesting.

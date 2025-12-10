@@ -39,16 +39,20 @@ async function main() {
 			const orderRaw = (record.Order || '').trim();
 			const orderPrefix = orderRaw ? orderRaw.padStart(2, '0') : '00';
 			const baseName = `${orderPrefix}.${sanitizeFileName(title)}`;
-			const canvas = createCanvas(ROLE_CARD_WIDTH, ROLE_CARD_HEIGHT);
-			const ctx = canvas.getContext('2d');
-			paintBackground(ctx);
-			paintRoleContent(ctx, record);
 			const filePath = path.join(outputDir, `${baseName}.png`);
-			await fs.writeFile(filePath, canvas.toBuffer('image/png'));
+			await drawRoleCard(filePath, record);
 		})
 	);
 
 	console.log(`Generated ${validRoles.length} role cards in ${outputDir}`);
+}
+
+async function drawRoleCard(filePath, record, options = {}) {
+	const canvas = createCanvas(ROLE_CARD_WIDTH, ROLE_CARD_HEIGHT);
+	const ctx = canvas.getContext('2d');
+	paintBackground(ctx);
+	paintRoleContent(ctx, record, { isBlank: options.blank === true || record.__blank === true });
+	await fs.writeFile(filePath, canvas.toBuffer('image/png'));
 }
 
 function paintBackground(ctx) {
@@ -71,7 +75,7 @@ function paintBackground(ctx) {
 	ctx.fillRect(EDGE_THICKNESS, EDGE_THICKNESS, ROLE_CARD_WIDTH - EDGE_THICKNESS * 2, ROLE_CARD_HEIGHT - EDGE_THICKNESS * 2);
 }
 
-function paintRoleContent(ctx, record) {
+function paintRoleContent(ctx, record, { isBlank = false } = {}) {
 	const safeLeft = EDGE_THICKNESS + CONTENT_PADDING;
 	const safeRight = ROLE_CARD_WIDTH - EDGE_THICKNESS - CONTENT_PADDING;
 	const contentWidth = safeRight - safeLeft;
@@ -79,14 +83,16 @@ function paintRoleContent(ctx, record) {
 	const title = (record.Title || 'Role').trim();
 	const order = (record.Order || '').trim();
 
-	const heroBottom = drawRoleNumber(ctx, order);
+	const heroBottom = drawRoleNumber(ctx, order, isBlank);
 
-	ctx.textAlign = 'center';
-	ctx.textBaseline = 'top';
-	ctx.fillStyle = BODY_TEXT_COLOR;
-	ctx.font = '800 42px "Montserrat", sans-serif';
 	const titleY = heroBottom + 16;
-	ctx.fillText(title, ROLE_CARD_WIDTH / 2, titleY);
+	if (!isBlank) {
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'top';
+		ctx.fillStyle = BODY_TEXT_COLOR;
+		ctx.font = '800 42px "Montserrat", sans-serif';
+		ctx.fillText(title, ROLE_CARD_WIDTH / 2, titleY);
+	}
 
 	const dividerY = titleY + 52;
 	ctx.strokeStyle = '#d9cbbd';
@@ -95,6 +101,10 @@ function paintRoleContent(ctx, record) {
 	ctx.moveTo(safeLeft, dividerY);
 	ctx.lineTo(safeRight, dividerY);
 	ctx.stroke();
+
+	if (isBlank) {
+		return;
+	}
 
 	let cursorY = dividerY + 18;
 	const text = (record.Text || '').trim();
@@ -125,18 +135,22 @@ function paintRoleContent(ctx, record) {
 	}
 }
 
-function drawRoleNumber(ctx, order) {
+function drawRoleNumber(ctx, order, isBlank) {
 	const display = order ? order.padStart(2, '0') : '--';
 	const centerY = EDGE_THICKNESS + 120;
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';
 	ctx.fillStyle = `${ROLE_ACCENT_COLOR}15`;
 	ctx.font = '900 200px "Montserrat", sans-serif';
-	ctx.fillText(display, ROLE_CARD_WIDTH / 2, centerY);
+	if (!isBlank) {
+		ctx.fillText(display, ROLE_CARD_WIDTH / 2, centerY);
+	}
 
 	ctx.fillStyle = ROLE_ACCENT_COLOR;
 	ctx.font = '800 60px "Montserrat", sans-serif';
-	ctx.fillText(display, ROLE_CARD_WIDTH / 2, centerY);
+	if (!isBlank) {
+		ctx.fillText(display, ROLE_CARD_WIDTH / 2, centerY);
+	}
 
 	return centerY + 80;
 }
@@ -205,3 +219,7 @@ if (require.main === module) {
 		process.exitCode = 1;
 	});
 }
+
+module.exports = {
+	drawRoleCard
+};

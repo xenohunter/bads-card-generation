@@ -34,7 +34,7 @@ async function main() {
 		for (let i = 0; i < copies; i++) {
 			const suffix = copies > 1 ? `-copy${i + 1}` : '';
 			const targetPath = path.join(outputDir, `${baseId}${suffix}.png`);
-			tasks.push(renderTicket(targetPath, ticket));
+			tasks.push(drawTicketCard(targetPath, ticket));
 		}
 	}
 
@@ -43,12 +43,13 @@ async function main() {
 	console.log(`Generated ${tasks.length} ticket cards in ${outputDir}`);
 }
 
-async function renderTicket(filePath, record) {
+async function drawTicketCard(filePath, record, options = {}) {
+	const isBlank = options.blank === true || record.__blank === true;
 	const canvas = createCanvas(TICKET_CARD_SIZE, TICKET_CARD_SIZE);
 	const ctx = canvas.getContext('2d');
 
 	paintBackground(ctx);
-	paintTicket(ctx, record);
+	paintTicket(ctx, record, { isBlank });
 
 	await fs.writeFile(filePath, canvas.toBuffer('image/png'));
 }
@@ -62,7 +63,7 @@ function paintBackground(ctx) {
 	ctx.strokeRect(2, 2, TICKET_CARD_SIZE - 4, TICKET_CARD_SIZE - 4);
 }
 
-function paintTicket(ctx, record) {
+function paintTicket(ctx, record, { isBlank = false } = {}) {
 	const padding = 24;
 	const safeLeft = padding;
 	const safeRight = TICKET_CARD_SIZE - padding;
@@ -76,20 +77,26 @@ function paintTicket(ctx, record) {
 	const badgeWidth = ctx.measureText(category).width + 24;
 	ctx.fillStyle = categoryColors.background;
 	drawRoundedRect(ctx, safeLeft, badgeY, badgeWidth, 32, 10);
-	ctx.fillStyle = categoryColors.foreground;
-	ctx.textAlign = 'left';
-	ctx.textBaseline = 'middle';
-	ctx.fillText(category, safeLeft + 12, badgeY + 16);
+	if (!isBlank) {
+		ctx.fillStyle = categoryColors.foreground;
+		ctx.textAlign = 'left';
+		ctx.textBaseline = 'middle';
+		ctx.fillText(category, safeLeft + 12, badgeY + 16);
+	}
 
 	const title = (record.Title || 'Ticket').trim();
-	ctx.textAlign = 'left';
-	ctx.textBaseline = 'top';
-	ctx.fillStyle = BODY_TEXT_COLOR;
-	ctx.font = '600 24px "Noto Sans", "Montserrat", sans-serif';
-	ctx.fillText(title, safeLeft, badgeY + 44);
+	if (!isBlank) {
+		ctx.textAlign = 'left';
+		ctx.textBaseline = 'top';
+		ctx.fillStyle = BODY_TEXT_COLOR;
+		ctx.font = '600 24px "Noto Sans", "Montserrat", sans-serif';
+		ctx.fillText(title, safeLeft, badgeY + 44);
+	}
 
 	const slotsTop = badgeY + 90;
-	const { rows: slotRows, height: slotHeight } = paintCounterSlots(ctx, record, safeLeft, slotsTop, contentWidth);
+	const slotResult = isBlank ? { rows: 0, height: 0 } : paintCounterSlots(ctx, record, safeLeft, slotsTop, contentWidth);
+	const slotRows = slotResult.rows;
+	const slotHeight = slotResult.height;
 
 	const slotBlockBottom = slotRows ? slotsTop + slotHeight + 18 : slotsTop;
 	const dividerY = slotBlockBottom + 6;
@@ -99,6 +106,10 @@ function paintTicket(ctx, record) {
 	ctx.moveTo(safeLeft, dividerY);
 	ctx.lineTo(safeRight, dividerY);
 	ctx.stroke();
+
+	if (isBlank) {
+		return;
+	}
 
 	let cursorY = dividerY + 18;
 	const text = record['Text (SA - Special Ability; WS - When Starting; OC - On Closing)'] || record.Text || '';
@@ -255,3 +266,7 @@ if (require.main === module) {
 		process.exitCode = 1;
 	});
 }
+
+module.exports = {
+	drawTicketCard
+};

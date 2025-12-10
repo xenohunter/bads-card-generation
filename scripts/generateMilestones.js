@@ -35,19 +35,11 @@ async function main() {
 		filteredMilestones.map(async (record) => {
 			const baseName = sanitizeFileName(record.ID || record.Title || 'card');
 
-			const frontCanvas = createCanvas(CARD_SIZE, CARD_SIZE);
-			const frontCtx = frontCanvas.getContext('2d');
-			paintBackground(frontCtx);
-			paintEdgesAndDividers(frontCtx, record);
-			paintCopy(frontCtx, record);
 			const frontPath = path.join(outputDir, `${baseName}.png`);
-			await fs.writeFile(frontPath, frontCanvas.toBuffer('image/png'));
+			await drawMilestoneFront(frontPath, record);
 
-			const backCanvas = createCanvas(CARD_SIZE, CARD_SIZE);
-			const backCtx = backCanvas.getContext('2d');
-			paintBack(backCtx, record);
 			const backPath = path.join(outputDir, `${withBackPrefix(baseName)}.png`);
-			await fs.writeFile(backPath, backCanvas.toBuffer('image/png'));
+			await drawMilestoneBack(backPath, record);
 		})
 	);
 
@@ -72,17 +64,35 @@ function paintBackground(ctx) {
 }
 
 
-function paintCopy(ctx, record) {
+async function drawMilestoneFront(filePath, record, options = {}) {
+	const canvas = createCanvas(CARD_SIZE, CARD_SIZE);
+	const ctx = canvas.getContext('2d');
+	paintBackground(ctx);
+	paintEdgesAndDividers(ctx, record);
+	paintCopy(ctx, record, { isBlank: options.blank === true || record.__blank === true });
+	await fs.writeFile(filePath, canvas.toBuffer('image/png'));
+}
+
+async function drawMilestoneBack(filePath, record) {
+	const canvas = createCanvas(CARD_SIZE, CARD_SIZE);
+	const ctx = canvas.getContext('2d');
+	paintBack(ctx, record);
+	await fs.writeFile(filePath, canvas.toBuffer('image/png'));
+}
+
+function paintCopy(ctx, record, { isBlank = false } = {}) {
 	const safeZoneLeft = EDGE_THICKNESS + CONTENT_PADDING;
 	const safeZoneRight = CARD_SIZE - EDGE_THICKNESS - CONTENT_PADDING;
 	const contentWidth = safeZoneRight - safeZoneLeft;
 
-	// Title (smaller font)
-	ctx.textAlign = 'center';
-	ctx.textBaseline = 'top';
-	ctx.fillStyle = BODY_TEXT_COLOR;
-	ctx.font = '700 28px "Noto Sans", "Montserrat", sans-serif';
-	ctx.fillText((record.Title || '').trim(), CARD_SIZE / 2, EDGE_THICKNESS + 16);
+// Title (smaller font)
+	if (!isBlank) {
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'top';
+		ctx.fillStyle = BODY_TEXT_COLOR;
+		ctx.font = '700 28px "Noto Sans", "Montserrat", sans-serif';
+		ctx.fillText((record.Title || '').trim(), CARD_SIZE / 2, EDGE_THICKNESS + 16);
+	}
 
 	// Divider line
 	ctx.strokeStyle = '#d9cbbd';
@@ -91,6 +101,10 @@ function paintCopy(ctx, record) {
 	ctx.moveTo(safeZoneLeft, EDGE_THICKNESS + 56);
 	ctx.lineTo(safeZoneRight, EDGE_THICKNESS + 56);
 	ctx.stroke();
+
+	if (isBlank) {
+		return;
+	}
 
 	// Body copy (smaller font)
 	ctx.textAlign = 'left';
@@ -104,8 +118,8 @@ function paintCopy(ctx, record) {
 	if (tierCallout) {
 		ctx.font = '700 18px "Noto Sans", "Montserrat", sans-serif';
 		ctx.fillText(tierCallout, safeZoneLeft, cursorY);
-		cursorY += bodyLineHeight; // move to next line
-		cursorY += blankLineHeight; // simulate double line break
+		cursorY += bodyLineHeight;
+		cursorY += blankLineHeight;
 		ctx.font = bodyFont;
 	}
 	cursorY = drawTextBlock(ctx, record.Text, {
@@ -309,3 +323,8 @@ if (require.main === module) {
 		process.exitCode = 1;
 	});
 }
+
+module.exports = {
+	drawMilestoneFront,
+	drawMilestoneBack
+};

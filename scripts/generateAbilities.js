@@ -43,12 +43,13 @@ async function main() {
 	console.log(`Generated ${jobs.length} ability cards in ${outputDir}`);
 }
 
-async function drawAbilityCard(filePath, record) {
+async function drawAbilityCard(filePath, record, options = {}) {
+	const isBlank = options.blank === true || record.__blank === true;
 	const canvas = createCanvas(CARD_SIZE, CARD_SIZE);
 	const ctx = canvas.getContext('2d');
 
 	paintBackground(ctx);
-	paintAbilityContent(ctx, record);
+	paintAbilityContent(ctx, record, { isBlank });
 
 	await fs.writeFile(filePath, canvas.toBuffer('image/png'));
 }
@@ -62,18 +63,20 @@ function paintBackground(ctx) {
 	ctx.strokeRect(EDGE_THICKNESS / 2, EDGE_THICKNESS / 2, CARD_SIZE - EDGE_THICKNESS, CARD_SIZE - EDGE_THICKNESS);
 }
 
-function paintAbilityContent(ctx, record) {
+function paintAbilityContent(ctx, record, { isBlank = false } = {}) {
 	const safeLeft = EDGE_THICKNESS + CONTENT_PADDING;
 	const safeRight = CARD_SIZE - EDGE_THICKNESS - CONTENT_PADDING;
 	const safeWidth = safeRight - safeLeft;
 	const top = EDGE_THICKNESS + CONTENT_PADDING;
 
-	const title = (record.Title || 'Untitled Ability').trim();
-	ctx.textAlign = 'center';
-	ctx.textBaseline = 'top';
-	ctx.fillStyle = BODY_TEXT_COLOR;
-	ctx.font = '700 34px "Noto Sans", "Montserrat", sans-serif';
-	ctx.fillText(title, CARD_SIZE / 2, top);
+	if (!isBlank) {
+		const title = (record.Title || 'Untitled Ability').trim();
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'top';
+		ctx.fillStyle = BODY_TEXT_COLOR;
+		ctx.font = '700 34px "Noto Sans", "Montserrat", sans-serif';
+		ctx.fillText(title, CARD_SIZE / 2, top);
+	}
 
 	ctx.strokeStyle = '#d9cbbd';
 	ctx.lineWidth = 2;
@@ -82,6 +85,9 @@ function paintAbilityContent(ctx, record) {
 	ctx.lineTo(safeRight, top + 48);
 	ctx.stroke();
 
+	if (isBlank) {
+		return;
+	}
 	let cursorY = top + 60;
 	ctx.textAlign = 'left';
 	ctx.fillStyle = BODY_TEXT_COLOR;
@@ -182,3 +188,7 @@ if (require.main === module) {
 		process.exitCode = 1;
 	});
 }
+
+module.exports = {
+	drawAbilityCard
+};

@@ -8,7 +8,7 @@
     "dev": "next dev",
     "build": "yarn generate && next build",
     "start": "next start",
-  "generate": "yarn generate:abilities && yarn generate:features && yarn generate:milestones && yarn generate:roles && yarn generate:misc && yarn generate:tickets && yarn generate:problems && yarn generate:atlases && yarn generate:print && yarn sync:public",
+    "generate": "yarn generate:abilities && yarn generate:features && yarn generate:milestones && yarn generate:roles && yarn generate:misc && yarn generate:tickets && yarn generate:problems && yarn generate:blanks && yarn generate:atlases && yarn generate:print && yarn sync:public",
     "generate:milestones": "node scripts/generateMilestones.js",
     "generate:features": "node scripts/generateFeatures.js",
     "generate:abilities": "node scripts/generateAbilities.js",
@@ -16,6 +16,7 @@
     "generate:misc": "node scripts/generateMisc.js",
     "generate:tickets": "node scripts/generateTickets.js",
     "generate:problems": "node scripts/generateProblems.js",
+    "generate:blanks": "node scripts/generateEmptyCards.js",
     "generate:atlases": "node scripts/compileCardAtlases.js",
     "generate:print": "node scripts/compilePrintSheets.js",
     "sync:public": "node scripts/syncStaticAssets.js"

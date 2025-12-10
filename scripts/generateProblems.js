@@ -33,7 +33,7 @@ async function main() {
 		for (let i = 0; i < copies; i++) {
 			const suffix = copies > 1 ? `-copy${i + 1}` : '';
 			const targetPath = path.join(outputDir, `${baseSlug}${suffix}.png`);
-			tasks.push(renderProblemCard(targetPath, problem));
+			tasks.push(drawProblemCard(targetPath, problem));
 		}
 	}
 
@@ -41,12 +41,13 @@ async function main() {
 	console.log(`Generated ${tasks.length} problem cards in ${outputDir}`);
 }
 
-async function renderProblemCard(filePath, record) {
+async function drawProblemCard(filePath, record, options = {}) {
+	const isBlank = options.blank === true || record.__blank === true;
 	const canvas = createCanvas(TICKET_CARD_SIZE, TICKET_CARD_SIZE);
 	const ctx = canvas.getContext('2d');
 
 	paintBackground(ctx);
-	paintProblem(ctx, record);
+	paintProblem(ctx, record, { isBlank });
 
 	await fs.writeFile(filePath, canvas.toBuffer('image/png'));
 }
@@ -60,18 +61,20 @@ function paintBackground(ctx) {
 	ctx.strokeRect(2, 2, TICKET_CARD_SIZE - 4, TICKET_CARD_SIZE - 4);
 }
 
-function paintProblem(ctx, record) {
+function paintProblem(ctx, record, { isBlank = false } = {}) {
 	const padding = 28;
 	const safeLeft = padding;
 	const safeRight = TICKET_CARD_SIZE - padding;
 	const contentWidth = safeRight - safeLeft;
 
 	const title = (record.Title || 'Problem').trim().toUpperCase();
-	ctx.fillStyle = TITLE_COLOR;
-	ctx.textAlign = 'left';
-	ctx.textBaseline = 'top';
-	ctx.font = '700 30px "Montserrat", sans-serif';
-	ctx.fillText(title, safeLeft, padding);
+	if (!isBlank) {
+		ctx.fillStyle = TITLE_COLOR;
+		ctx.textAlign = 'left';
+		ctx.textBaseline = 'top';
+		ctx.font = '700 30px "Montserrat", sans-serif';
+		ctx.fillText(title, safeLeft, padding);
+	}
 
 	const delimiterY = padding + 48;
 	ctx.strokeStyle = '#edd9cf';
@@ -80,6 +83,10 @@ function paintProblem(ctx, record) {
 	ctx.moveTo(safeLeft, delimiterY);
 	ctx.lineTo(safeRight, delimiterY);
 	ctx.stroke();
+
+	if (isBlank) {
+		return;
+	}
 
 	let cursorY = delimiterY + 18;
 	const mainText = (record.Text || '').trim();
@@ -177,3 +184,7 @@ if (require.main === module) {
 		process.exitCode = 1;
 	});
 }
+
+module.exports = {
+	drawProblemCard
+};
