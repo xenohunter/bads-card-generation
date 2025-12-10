@@ -1,34 +1,47 @@
-ID,Addon,Copies,Title,Text,Funny text,Notes
-,,1,Delegate,Move any 1 Ticket to a different Feature.,,
-,,1,Prediction Markets,Search the Player Deck for 1 specific Feature and put it at the bottom of the Player Deck.,,
-,,1,Hawaii Team Retreat,"Each player puts away any number of cards in their hand, then draws as many as was discarded. Shuffle all the cards that were put away, discard 2 of them, and shuffle the rest into the Player Deck.",,
-,,1,Schedule Maneuvering,Place 2 counters total on any 1 or 2 Tickets.,,
-,,1,Rebranding,Place as many counters on DESIGN Tickets as you have Completed DESIGN Features.,,
-,,1,Fingers In All Pies,Give away as many Abilities from your hand to other players. Draw that number minus one card.,,Dubious title
-,,2,No-Code Solution,Close any TECH Ticket that has 2 or fewer unfilled counter slots.,,
-,,1,"""Streisand Deflect""",Close all Tickets on any single MARKETING Feature. Add twice as many Tickets to another MARKETING Feature.,,
-,,1,Hackathon,"Everyone rolls a die. Sum up the results. Subtract the total number of cards in players' hands. Subtract the total number of non-Completed Features. If the result is still positive, put that many counter on any Tickets you want.",,
-,,2,Script Kiddie,"Remove 1 counter from any Ticket. Put 2 counters on any TECH Ticket, even if it says you cannot do that.",,
-,,1,Tech Debt,"Close any TECH Ticket. Roll a die.
+ID,Addon,Copies,Title,Text,RU Text,Funny text,Notes
+,,2,Delegate,Move any 1 Ticket to a different Feature.,Переместите 1 любой Тикет на другую Фичу.,,
+,,2,Prediction Markets,"Search the Player Deck for 1 specific card, shuffle the Deck, then place the card at the top or bottom of the Player Deck.","Найдите в Player Deck одну конкретную карту, перемешайте колоду, затем положите эту карту на верх или на дно колоды.",,
+,,1,Hawaii Team Retreat,"Each player puts away any number of cards in their hand, then draws as many as was discarded. Shuffle all the cards that were put away, discard 2 of them, and shuffle the rest into the Player Deck.","Каждый игрок откладывает в сторону некоторое количество карт, затем берёт столько же из Player Deck. Перемешайте все отложенные карты, сбросьте две из них, остальные замешайте в колоду.",,
+,,2,Schedule Maneuvering,Place 4 counters total on any 1 or 2 Tickets.,Положите в сумме 4 человеко-часа на любые 1 или 2 Тикета.,,
+,,1,Rebranding,Place as many counters on any DESIGN Tickets as you have Completed DESIGN Tickets among the last 10 in the Work discard pile.,"Положите столько человеко-часов на любые DESIGN Тикеты, сколько у вас есть завершённых DESIGN Тикетов среди последних десяти сброшенных в Work-сброс.",,
+,,1,Fingers In All Pies,Give away any number of cards from your hand to other players. Draw that many cards.,Отдайте любое количество карт из руки другим игрокам. Возьмите столько же карт.,,Dubious title
+,,2,No-Code Solution,Close any TECH Ticket that has 2 or fewer unfilled counter slots.,"Закройте любой TECH Тикет, в котором 2 или меньше незаполненных временных слота.",,
+,,1,"""Streisand Deflect""",Close all Tickets on any single-Market Feature. Add twice as many Tickets to any other Feature.,Закройте все Тикеты на любой одно-Рынковой Фиче. Добавьте вдвое больше Тикетов на любую другую Фичу.,,
+,,2,Hackathon,"Everyone rolls a die. Sum up the results. Subtract the total number of cards in players' hands. Subtract the total number of non-Completed Features. If the result is still positive, put that many counter on any Tickets you want.","Все кидают по кубику. Сложите результаты. Вычтите количество карт у всех игроков. Вычтите общее количество не-Завершённых Фич. Если результат положительный, то положите столько человеко-часов на любые Тикеты.",,
+,,2,Script Kiddie,"Remove 1 counter from any Ticket. Put 2 counters on any TECH Ticket, even if it says you cannot do that.","Уберите 1 человеко-час с любого Тикета. Положите 2 человеко-часа на любой TECH Тикет, даже если там написано, что вы не можете этого сделать.",,
+,,2,Tech Debt,"Close any TECH Ticket. Roll a die.
 
 On 1-2: put 2 new Tickets on the same Feature, or remove 3 counters from other TECH Tickets.
 
 On 3-4: put 1 new Ticket on the same Feautre, or remove 2 counters from other TECH Tickets.
 
-On 5-6: remove 1 counter from another TECH Ticket.",,
-,,1,Creatine Microdosing,Commit 2 actions this turn. Playing this card doesn't spend your action.,,
-,,2,Refactoring,"Move 1 Feature with all its Tickets to a differnt valid place in the Product.
+On 5-6: remove 1 counter from another TECH Ticket.","Закройте любой TECH Тикет. Киньте кубик.
 
-Add 1 extra Ticket on top of it. (Even if the Feature was completed.)",,
-,,1,Heavy Refactoring,"Move up to 2 Features with all their Tickets to different valid places in the Product.
+1-2: положите 2 новых Тикета на ту же Фичу или уберите 3 человеко-часа с других TECH Тикетов.
 
-Add 2 extra Tickets on top of each. (Even if either of the Features was completed.)",,
-,,2,Jack Of All Trades,"Place 3 counters on 3 Tickets of different categories (i.e. TECH, DESIGN, etc).",,
-,,1,Pizza Time,Everyone draws a card.,,
-,,1,Working Overtime,Place 3 counters on any single Ticket.,,
-,,1,Outsource,"Put this card in front of you.
+3-4: положите 1 новый Тикет на ту же Фичу или уберите 2 человеко-часа с других TECH Тикетов.
+
+5-6: уберите 1 человеко-час с другого TECH Тикета.",,
+,,3,Creatine Microdosing,Commit 2 actions this turn. Playing this card doesn't spend your action.,"Совершите 2 действия в этом ходу. Играя эту карту, вы не тратите действие.",,
+,,3,Refactoring,"Move 1 Feature with all its Tickets to a differnt valid place in the Product.
+
+Add 1 extra Ticket on top of it. (Even if the Feature was completed.)","Переместите 1 Фичу со всеми Тикетами в другое валидное место в Продукте.
+
+Добавьте 1 дополнительный Тикет на неё. (Даже если она была Завершена.)",,
+,,2,Heavy Refactoring,"Move up to 2 Features with all their Tickets to different valid places in the Product.
+
+Add 2 extra Tickets on top of each. (Even if either of the Features was completed.)","Переместите 2 Фичи со всеми Тикетами в другие валидные места в Продукте.
+
+Добавьте 2 дополнительных Тикета на неё. (Даже если она была Завершена.)",,
+,,2,Jack Of All Trades,"Place 3 counters on 3 Tickets of different categories (i.e. TECH, DESIGN, etc).",,,
+,,3,Working Overtime,Place 3 counters on any single Ticket.,Положите 3 человеко-часа на 1 любой Тикет.,,
+,,2,Outsource,"Put this card in front of you.
 
 At the beginning of your turn, roll a die. On 1, discard this cards and all counters on it. On 2-6, add a counter to it (up to 5 counters).
 
-During your turn, you may discard this card and put all counter from it on Tickets of your choice. That won't spend your action.",,
-,Mafia,2,Coup,Swap Roles with any other player.,,Probably except for the CEO?
+During your turn, you may discard this card and put all counter from it on Tickets of your choice. That won't spend your action.","Положите эту карту перед собой.
+
+В начале вашего хода, киньте кубик. Если 1, то сбросьте эту карту и все человеко-часы на ней. Если 2-6, добавьте один человеко-час на неё.
+
+В ваш ход, вы можете сбросить эту карту и положить все человеко-часы с неё на Тикеты по вашему выбору. Это не потратит ваше действие.",,
+,Mafia,2,Coup,Swap Roles with any other player.,,,Probably except for the CEO?

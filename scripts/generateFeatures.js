@@ -92,7 +92,7 @@ function paintFeatureContent(ctx, record, { isBlank = false } = {}) {
 	let cursorY = headerBottom + 60;
 	ctx.fillStyle = BODY_TEXT_COLOR;
 	ctx.font = '500 19px "Noto Sans", "Montserrat", sans-serif';
-	const description = record['Text (SA - Special Ability; OC - On Completion)'] || record.Text || '';
+	const description = record['Text'] || record.Text || '';
 	cursorY = drawTextBlock(ctx, description, {
 		x: safeZoneLeft,
 		y: cursorY,

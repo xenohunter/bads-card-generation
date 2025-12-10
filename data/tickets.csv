@@ -1,36 +1,46 @@
-ID,Addon,Copies,Category,Title,Slot type,Counter slots,Text (SA - Special Ability; WS - When Starting; OC - On Closing),Funny text,Notes
-,,1,TECH,Crippling Safetyism,▢,10,"Until this Ticket is closed, no other AI Ticket can be worked on (of any category).",,One of the main concerns: whether to use Markets for referencing them like this.
-,,1,TECH,Pre-Release,▢,3,You can only place counters on this Ticket when there 2 or fewer non-Completed Features in the Product.,,
-,,1,DESIGN,Quick Hit,▢,2,,,
-,,1,TECH,We Need A 10x Engineer!,▢,5,Only the CTO can place counters on this Ticket.,,
-,,1,TECH,API Integrations,▢,3,WS: Place 1 counter on this Ticket for every 5 TECH Tickets in the Word discard pile.,,"Probably should be in reverse? If 3 or fewer, then API integration is fast?"
-,,1,DESIGN,Hard To Grasp,▢,0,"To close this Ticket, spend your action and roll a die. On 6, close it.",,
-,,1,DESIGN,Picky Customers,✕,6,"WS: Roll a die. Place that many counters on this Ticket. Anyone can spend their action to remove one counter. At 0, close it.",,
-,,1,TECH,Microservice Architecture,▢,6,"WS: For each standalone group of Completed single-Market Features, place 1 counter on this Ticket. If 6 counters or more, close this Ticket.",,"Need to reformulate the ""standalone group"" term, or use that mechanic more often so that it's in the glossary."
-,,1,DESIGN,A Dozen Of Sigma Mockups,▢,12,WS: Place 1 counter on this Ticket for each Completed Feature that has matching Markets with the Feature under this Ticket.,,
-,,1,MARKETING,Slopification,✕,10,"Place 1 counter on this Ticket for every Open DESIGN or MARKETING Ticket (this one included; up to 10 counters).
+ID,Addon,Copies,Category,Title,Slot type,Counter slots,Text,RU Text,Funny text,Notes
+,,1,TECH,Crippling Safetyism,▢,10,"Until this Ticket is closed, no other TECH Ticket can be worked on.","Пока этот Тикет не закрыт, нельзя работать ни над каким другим TECH Тикетом.",,One of the main concerns: whether to use Markets for referencing them like this.
+,,1,TECH,Pre-Release,▢,3,You can only place counters on this Ticket when there 2 or fewer non-Completed Features in the Product.,"Вы можете помещать человеко-часы на этот Тикет, только если есть 2 или меньше не-Завершённые Фичи в вашем Продукте.",,
+,,2,DESIGN,Quick Hit,▢,2,,,,
+,,1,TECH,We Need A 10x Engineer!,▢,5,Only the CTO can place counters on this Ticket.,Только CTO может добавлять человеко-часы на этот Тикет.,,
+,,1,TECH,API Integrations,▢,3,🚀: Place 1 counter on this Ticket for every 5 TECH Tickets in the Work discard pile.,🚀: Добавьте 1 человеко-час на этот Тикет за каждые 5 TECH Тикетов в Work-сбросе.,,"Probably should be in reverse? If 3 or fewer, then API integration is fast?"
+,,1,DESIGN,Hard To Grasp,▢,12,"🅰️: Roll a die. If even, place that many counters on this Ticket. If odd, remove that many.","🅰️: Киньте кубик. Если чётно, добавьте столько человеко-часов на этот Тикет. Если нечётно, уберите столько человеко-часов с него.",,
+,,1,DESIGN,Picky Customers,✕,6,"🚀: Roll a die. Place that many counters on this Ticket.
 
-Spend your action to remove a counter from thie Ticket. At 0, close it.",,
-,,1,MARKETING,Fix A Typo,▢,1,,,
-,,1,DESIGN,You'll Need A Vacation,▢,10,You may spend your action and discard 3 cards from your hand to close this Ticket at once.,,
-,,1,ANY,Wildcard,▢,5,This Ticket acts as if it belongs to each category.,,
-,,1,ADMIN,Cracked (???),▢,5,"SA: Roll a die. On 5-6, place as many counters on this Ticket as there are on the cheapest adjacent Ticket (on 4 sides). If 5 counters or more, close this Ticket.",,
-,,1,TECH,Fix The Typo,▢,1,"OC: If there is another Ticket under this one and if that's a TECH Ticket, roll a die. On 6, close that other Ticket as well.",,
-,,1,DESIGN,More Mockups,▢,3,,,
-,,1,TECH,A Chunk Of Work,▢,3,,,
-,,1,TECH,"AI Isn't A Pit, AI Is A Mirror",▢,8,"When placing a counter on this Ticket, place instead as many counters as there are cards in the hand of the player who has the least cards.",,"Originally, the name was ""AI Isn't A Mind, It's A Mirror"""
-,,1,TECH,Simple Update,▢,2,,,
-,,1,DESIGN,Bad On Purpose,▢,3,"OC: The player who closed this Ticket either:
+🅰️:  Spend your action to remove 1 counter. At 0, close it.","🚀: Киньте кубик. Добавьте столько человеко-часов на этот Тикет.
+
+🅰️: Потратьте своё действие, чтобы убрать 1 человеко-час. Когда 0, закройте этот Тикет.",,
+,,1,TECH,Microservice Architecture,▢,6,"🚀: For each standalone group of Completed single-Market Features, place 1 counter on this Ticket. If 6 counters or more, close this Ticket.","🚀: Для каждой отдельной группы Завершённых одно-Рынковых Фич, положите 1 человеко-час на этот Тикет. Если набралось 6+, закройте этот Тикет.",,"Need to reformulate the ""standalone group"" term, or use that mechanic more often so that it's in the glossary."
+,,1,DESIGN,A Dozen Sigma Mockups,▢,12,🚀: Place 1 counter on this Ticket for each Completed Feature that has matching Markets with the Feature under this Ticket.,"🚀: Поместите 1 человеко-час на этот Тикет за каждую Завершённую Фичу с такими же Рынками, как на Фиче под этим Тикетом.",,
+,,2,MARKETING,Slopification,✕,10,"🚀: Place 1 counter on this Ticket for every Open DESIGN or MARKETING Ticket (this one included; up to 10 counters).
+
+🅰️:  Spend your action to remove 1 counter. At 0, close it.","🚀: Поместите 1 человеко-час на этот Тикет за каждый Открытый DESIGN или MARKETING Тикет (включая этот; до 10 человеко-часов).
+
+🅰️: Потратьте своё действие, чтобы убрать 1 человеко-час. Когда 0, закройте этот Тикет.",,
+,,1,DESIGN,You'll Need A Vacation,▢,10,🅰️:  Spend your action and discard 3 cards from your hand to close this Ticket at once.,"🅰️:  Потратьте своё действие и сбросьте 3 карты из руки, чтобы закрыть этот Тикет.",,
+,,1,ANY,Wildcard,▢,5,This Ticket acts as if it belongs to each category.,Этот Тикет принадлежит сразу ко всем категориям.,,
+,,1,ADMIN,Cracked (???),▢,5,"🅰️: Roll a die. On 5-6, place as many counters on this Ticket as there are on the cheapest adjacent Ticket (on 4 sides). If 5 counters or more, close this Ticket.","🅰️: Киньте кубик. Если 5-6, положите столько человеко-часов на этот Тикет, сколько есть на самом дешёвом прилегающем Тикете (по 4 сторонам). Если 5+, закройте этот Тикет.",,
+,,2,MARKETING,Fix A Typo,▢,1,,,,
+,,2,TECH,Fix The Typo,▢,1,"🎯: If there is another Ticket under this one and it's a TECH Ticket, roll a die. On 6, close that other TECH Ticket as well.","🎯: Если под этим Тикетом есть ещё один, и это TECH Тикет, киньте кубик. Если 6, также закройте этот второй TECH Тикет.",,
+,,2,DESIGN,More Mockups,▢,3,,,,
+,,2,TECH,A Chunk Of Work,▢,3,,,,
+,,1,TECH,"AI Isn't A Pit, AI Is A Mirror",▢,8,"When placing counters on this Ticket, place instead as many counters as there are cards in the hand of the player who has the least cards.","Когда помещаете человеко-часы на этот Тикет, вместо задуманного количество положите столько, сколько карт в руке игрока с наименьшим количеством карт.",,"Originally, the name was ""AI Isn't A Mind, It's A Mirror"""
+,,2,TECH,Simple Update,▢,2,,,,
+,,1,DESIGN,Bad On Purpose,▢,3,"🎯: The player who closed this Ticket either:
 - draws a card if this is the last Ticket before the Feature is Completed
-- discards a card otherwise",,
-,,1,ADMIN,Basically Nothing,▢,1,,,
-,,1,DESIGN,Generate The Logo,▢,0,"You cannot conventionally place a counter on this Ticket. Instead, spend your action and roll a die. On 6, close this Ticket.",,
-,,1,ADMIN,Rote Work,▢,10,,,
-,,1,TECH,Merging Databases,▢,5,"WS: Place 5 counters on this Ticket. For each currently open TECH Ticket in the Product, remove 1 counter.",,Probably reformulate the text.
-,,1,ADMIN,Just Another Ticket,▢,3,,,
-,,1,ADMIN,Just A One-Liner,▢,2,,,
-,,1,ADMIN,Crasher,▢,4,Discard a card every time you place counters on this Ticket.,,It was formerly called Burnout.
+- discards a card otherwise","🎯: Игрок, который закрывает этот Тикет:
+- берёт карту, если это был последний Тикет перед Завершением Фичи
+- сбрасывает карту в ином случае",,
+,,3,ADMIN,Basically Nothing,▢,1,,,,
+,,1,DESIGN,Generate The Logo,▢,0,"You cannot conventionally place counters on this Ticket. Instead, spend your action and roll a die. On 6, close this Ticket.","Вы не можете класть человеко-часы на этот Тикет обычным способом. Вместо этого, потратьте действие и киньте кубик. Если 6, закройте этот Тикет.",,
+,,1,ADMIN,Rote Work,▢,10,,,,
+,,1,TECH,Merging Databases,▢,5,"🚀: Place 4 counters on this Ticket. For each currently open TECH Ticket in the Product, remove 1 counter.","🚀: Положите 4 человеко-часа на этот Тикет. За каждый открытый сейчас TECH Тикет в Продукте, снимите 1 человеко-час.",,Probably reformulate the text.
+,,2,ADMIN,Just Another Ticket,▢,3,,,,
+,,3,ADMIN,Just A One-Liner,▢,2,,,,
+,,1,ADMIN,Crasher,▢,4,Discard a card every time you place counters on this Ticket.,"Сбросьте карту каждый раз, когда кладёте человеко-часы на этот Тикет.",,It was formerly called Burnout.
 ,,1,ADMIN,Reprioritization,✕,4,"Pull one counter from every adjacent (on 4 sides) Ticket, if possible.
 
-Spend your action to remove a counter from this Ticket. At 0, close it.",,
-,,1,TECH,Prompt Engineering,▢,3,"You cannot conventionally place a counter on this Ticket. Instead, spend your action and roll a die. On 5-6, place a counter on it.",,
+Spend your action to remove a counter from this Ticket. At 0, close it.","Стяните по одному человеко-часу с каждого из прилегающих (по 4 сторонам) Тикетов, если это возможно.
+
+Потратьте действие, чтобы снять человеко-час с этого Тикета. Если 0, закройте его.",,
+,,1,TECH,Prompt Engineering,▢,3,"You cannot conventionally place a counter on this Ticket. Instead, spend your action and roll a die. On 5-6, place 1 counter on it.","Вы не можете класть человеко-часы на этот Тикет обычным способом. Вместо этого, потратьте действие и киньте кубик. Если 5-6, поместите 1 человеко-час на этот Тикет.",,

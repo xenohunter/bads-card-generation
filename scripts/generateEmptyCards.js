@@ -33,7 +33,7 @@ function createFeatureRecord() {
 		Title: '',
 		Markets: '',
 		'Funny text': '',
-		'Text (SA - Special Ability; OC - On Completion)': '',
+		'Text': '',
 		Text: '',
 		'Score Points': '',
 		'North edge': 'A',
@@ -90,7 +90,7 @@ function createTicketRecord() {
 		Title: '',
 		'Counter slots': 0,
 		'Slot type': '▢',
-		'Text (SA - Special Ability; WS - When Starting; OC - On Closing)': '',
+		'Text': '',
 		Text: '',
 		'Funny text': '',
 		__blank: true

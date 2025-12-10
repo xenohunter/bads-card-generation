@@ -1,15 +1,20 @@
-ID,Addon,Copies,Title,Text,Funny text,Notes
+ID,Addon,Copies,Title,Text,RU Text,Funny text,Notes
 ,,1,Sick Leave,"Put 3 counters on this card and put it beside yourself. At upkeep, remove one counter from it. At 0, discard this card.
 
-As long as this card is laying beside you, you cannot place counters on Tickets.",,Formerly known as Burnout.
-,,1,Unexpected Failure,"Place 2 Tickets on the most expensive completed Feature. In case of a tie, let the CEO choose.",,
-,,1,US-East-1 Outage,Everyone discards a card.,,
+As long as this card is laying beside you, you cannot place counters on Tickets. (Not even with Abilities.)","Положите 3 токена на эту карту и поместите её рядом с собою. В начале каждого хода, убирайте по 1 токену. Если 0, сбросьте карту.
+
+Пока эта карта лежит рядом с вами, вы не можете помещать человеко-часы на Тикеты. (Даже с помощью Абилок.)",,Formerly known as Burnout.
+,,1,Unexpected Failure,"Place 2 Tickets on the most expensive completed Feature. In case of a tie, let the CEO choose.","Поместите 2 Тикета на самую дорогую Завершённую Фичу. В случае, если есть несколько таких Фич, выбирает CEO.",,
+,,2,US-East-1 Outage,Everyone discards 1 card.,Все сбрасывают по 1 карте.,,
 ,,1,Sunset A Feature,"Remove one Feature from the Product whose removal won't break the Product graph in two or more parts.
 
-If the removed Feature is not Completed, place 1 counter on any Ticket for each Ticket on the removed Feature.",At least we can spend our time on something we really care about!,
-,,1,Lagging Behind,"If the Product has 4 or more Features (both Completed and not) and if the Tier 1 Milestone is not in the Product yet, everyone discards 2 cards. For everyone who doesn't have enough cards, remove 1 counter from any Ticket.",,
-,,1,Feature Creep,"Take the first Feature from the bottom of the Player Deck. Put it on any valid place in the Product. Put 1 extra Ticket on it.
+If the removed Feature is not Completed, place 1 counter on any Ticket for each Ticket on the removed Feature.","Уберите 1 Фичу из Продукта, если её удаление не разделит Продукт на 2 или больше частей.
 
-If there is no valid place for the Feature, discard it.
+Если убранная Фича не была Завершённой, поместите 1 человеко-час на любой Тикет за каждый Тикет на убранной Фиче.",At least we can spend our time on something we really care about!,
+,,1,Lagging Behind,"If the Product has 4 or more Features (both Completed and not) and if the Tier 1 Milestone is not in the Product yet, everyone discards 2 cards.","Если в Продукте 4 или более Фич (как Завершённых, так и нет) и если Майлстоун 1 Уровня ещё не в Продукте, то все сбрасывают по 2 карты.",,
+,,1,Feature Creep,"Take the first Feature from the bottom of the Player Deck. Put it on any valid place in the Product. Put 1 extra Ticket on it. (Besides the ones required based on Score Points.)
 
-Shuffle the deck.",,"Formerly, the unplaced Feature was put back in the deck."
+If there is no valid place for the Feature, discard it. Shuffle the deck.","Возьмите первую Фичу со дна Player Deck колоды. Положите её на любое валидное место в Продукте. Положите на неё один дополнительный Тикет. (Помимо тех, которые полагаются по Score Points.)
+
+Если валидного места нет, сбросьте ту Фичу. Перемешайте колоду.",,"Formerly, the unplaced Feature was put back in the deck."
+,,2,Pizza Time,Everyone draws 1 card.,Все берут по 1 карте.,,

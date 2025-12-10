@@ -1,13 +1,17 @@
-ID,Addon,Order,Title,Text,Funny text,Notes
-,,1,CEO,Place 2 counters instead of 1 with your default action.,,
-,,2,CTO,Place 3 counters on TECH Tickets instead of 1 with your default action.,,
-,,3,Office Manager,"Draw 2 cards instead of 1 at upkeep, then put one of them on top or the bottom of the Player Deck.",,"This is very experimental, probably will do something else with it instead."
-,,4,Manager,You decide the order of card actions on your turn.,,Need to determine the canonic effect resolution order.
-,,5,Lead SWE,Discard 2 cards to pull Refactoring from discard pile (discard 3 to pull Heavy Refactoring).,,
-,,6,Generalist,Place +1 counter for every 2 Markets currently featured in the Product.,,"Define upkeep strictly in the rules, it should only point to drawing a card from the Player Deck at the beginning of a turn."
-,,7,,,,
-,,8,,,,
-,,9,,,,
-,,10,,,,
-,,11,,,,
-,,12,,,,
+ID,Addon,Order,Title,Text,RU Text,Funny text,Notes
+,,1,CEO,"When placing counters on any single Ticket, place +1 counter.","Когда кладёте человеко-часы на 1 Тикет, положите +1 человеко-час.",,
+,,2,CTO,"When placing counters on a single TECH Ticket, place +2 counters.","Когда кладёте человеко-часы на 1 TECH Тикет, положите +2 человеко-часа.",,
+,,3,Office Manager,"Draw 2 cards instead of 1 at upkeep, then put one of them on top or the bottom of the Player Deck.","Возьмите 2 карты вместо 1 в начале хода, затем положите одну из них на верх или дно Player Deck колоды.",,"Define upkeep strictly in the rules, it should only point to drawing a card from the Player Deck at the beginning of a turn."
+,,4,Lead SWE,"🅰️: Discard 2 cards and do Refactoring.
+
+🅰️: Discard 3 cards and do Heavy Refactoring.","🅰️: Сбросьте 2 карты и проведите Refactoring.
+
+🅰️: Сбросьте 3 карты и проведите Heavy Refactoring.",,
+,,5,Generalist,"When placing counter, place +1 counter for every 2 Markets currently featured in the Product.","Когда кладёте человеко-часы, положите +1 человеко-час за каждые 2 Рынка, которые есть в Продукте.",,
+,,6,Manager,You decide the order of card actions on your turn.,"Вы решаете, в каком порядке сработают эффекты карт в ваш ход.",,Need to determine the canonic effect resolution order.
+,,7,,,,,
+,,8,,,,,
+,,9,,,,,
+,,10,,,,,
+,,11,,,,,
+,,12,,,,,

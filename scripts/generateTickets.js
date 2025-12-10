@@ -112,7 +112,7 @@ function paintTicket(ctx, record, { isBlank = false } = {}) {
 	}
 
 	let cursorY = dividerY + 18;
-	const text = record['Text (SA - Special Ability; WS - When Starting; OC - On Closing)'] || record.Text || '';
+	const text = record['Text'] || record.Text || '';
 	if (text.trim()) {
 		ctx.font = '500 18px "Noto Sans", "Montserrat", sans-serif';
 		cursorY = drawTextBlock(ctx, text, {
