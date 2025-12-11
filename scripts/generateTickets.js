@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const { createCanvas } = require('canvas');
 const { parse } = require('csv-parse/sync');
+require('./utils/fontRegistry'); // Register fonts
 const {
 	EDGE_THICKNESS,
 	CONTENT_PADDING,
@@ -76,7 +77,7 @@ function paintTicket(ctx, record, { isBlank = false } = {}) {
 
 	const badgeY = padding - 8;
 	if (!isBlank) {
-		ctx.font = '700 18px "Montserrat", sans-serif';
+		ctx.font = '700 18px "Montserrat", "Noto Color Emoji", sans-serif';
 		const badgeWidth = ctx.measureText(category).width + 24;
 		ctx.fillStyle = categoryColors.background;
 		drawRoundedRect(ctx, safeLeft, badgeY, badgeWidth, 32, 10);
@@ -91,7 +92,7 @@ function paintTicket(ctx, record, { isBlank = false } = {}) {
 		ctx.textAlign = 'left';
 		ctx.textBaseline = 'top';
 		ctx.fillStyle = BODY_TEXT_COLOR;
-		ctx.font = '600 24px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = '600 24px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillText(title, safeLeft, badgeY + 44);
 	}
 
@@ -114,9 +115,9 @@ function paintTicket(ctx, record, { isBlank = false } = {}) {
 	}
 
 	let cursorY = dividerY + 18;
-	const text = getLocalizedText(record, ['Text', 'Text (SA - Special Ability; WS - When Starting; OC - On Closing)']);
+	const text = getLocalizedText(record, ['Text']);
 	if (text.trim()) {
-		ctx.font = '500 18px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = '500 18px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		cursorY = drawTextBlock(ctx, text, {
 			x: safeLeft,
 			y: cursorY,
@@ -129,7 +130,7 @@ function paintTicket(ctx, record, { isBlank = false } = {}) {
 	const funny = record['Funny text'];
 	if (funny && funny.trim()) {
 		cursorY += 16;
-		ctx.font = 'italic 500 16px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = 'italic 500 16px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillStyle = '#574334';
 		drawTextBlock(ctx, funny, {
 			x: safeLeft,
@@ -157,7 +158,7 @@ function paintCounterSlots(ctx, record, left, top, maxWidth) {
 	const usableWidth = Math.max(endX - startX, 1);
 	const columnSpacing = usableWidth / (slotsPerRow - 1);
 
-	ctx.font = `600 ${glyphSize}px "Montserrat", sans-serif`;
+	ctx.font = `600 ${glyphSize}px "Montserrat", "Noto Color Emoji", sans-serif`;
 	ctx.fillStyle = '#4b372a';
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';

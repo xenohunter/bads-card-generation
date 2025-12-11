@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const { createCanvas } = require('canvas');
 const { parse } = require('csv-parse/sync');
+require('./utils/fontRegistry'); // Register fonts
 const { TICKET_CARD_SIZE, BODY_TEXT_COLOR } = require('./utils/constants');
 const { shouldIgnoreRecord } = require('./utils/recordFilters');
 const { resolveOutputPath } = require('./utils/runtimeConfig');
@@ -74,7 +75,7 @@ function paintProblem(ctx, record, { isBlank = false } = {}) {
 		ctx.fillStyle = TITLE_COLOR;
 		ctx.textAlign = 'left';
 		ctx.textBaseline = 'top';
-		ctx.font = '700 30px "Montserrat", sans-serif';
+		ctx.font = '700 30px "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillText(title, safeLeft, padding);
 	}
 
@@ -94,7 +95,7 @@ function paintProblem(ctx, record, { isBlank = false } = {}) {
 	const mainText = getLocalizedText(record, ['Text']);
 	if (mainText) {
 		ctx.fillStyle = BODY_TEXT_COLOR;
-		ctx.font = '500 20px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = '500 20px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		cursorY = drawTextBlock(ctx, mainText, {
 			x: safeLeft,
 			y: cursorY,
@@ -107,7 +108,7 @@ function paintProblem(ctx, record, { isBlank = false } = {}) {
 	if (funny) {
 		cursorY += 16;
 		ctx.fillStyle = FUNNY_TEXT_COLOR;
-		ctx.font = 'italic 500 20px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = 'italic 500 20px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		drawTextBlock(ctx, funny, {
 			x: safeLeft,
 			y: cursorY,

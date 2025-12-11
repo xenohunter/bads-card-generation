@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const { createCanvas } = require('canvas');
 const { parse } = require('csv-parse/sync');
+require('./utils/fontRegistry'); // Register fonts
 const {
 	EDGE_THICKNESS,
 	CONTENT_PADDING,
@@ -92,7 +93,7 @@ function paintRoleContent(ctx, record, { isBlank = false } = {}) {
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'top';
 		ctx.fillStyle = BODY_TEXT_COLOR;
-		ctx.font = '800 42px "Montserrat", sans-serif';
+		ctx.font = '800 42px "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillText(title, ROLE_CARD_WIDTH / 2, titleY);
 	}
 
@@ -112,7 +113,7 @@ function paintRoleContent(ctx, record, { isBlank = false } = {}) {
 	const text = getLocalizedText(record, ['Text']);
 	if (text) {
 		ctx.textAlign = 'left';
-		ctx.font = '500 20px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = '500 20px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		cursorY = drawTextBlock(ctx, text, {
 			x: safeLeft,
 			y: cursorY,
@@ -125,7 +126,7 @@ function paintRoleContent(ctx, record, { isBlank = false } = {}) {
 	const funny = (record['Funny text'] || '').trim();
 	if (funny) {
 		cursorY += 20;
-		ctx.font = 'italic 500 18px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = 'italic 500 18px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillStyle = '#5c4d40';
 		drawTextBlock(ctx, funny, {
 			x: safeLeft,
@@ -143,13 +144,13 @@ function drawRoleNumber(ctx, order, isBlank) {
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';
 	ctx.fillStyle = `${ROLE_ACCENT_COLOR}15`;
-	ctx.font = '900 200px "Montserrat", sans-serif';
+	ctx.font = '900 200px "Montserrat", "Noto Color Emoji", sans-serif';
 	if (!isBlank) {
 		ctx.fillText(display, ROLE_CARD_WIDTH / 2, centerY);
 	}
 
 	ctx.fillStyle = ROLE_ACCENT_COLOR;
-	ctx.font = '800 60px "Montserrat", sans-serif';
+	ctx.font = '800 60px "Montserrat", "Noto Color Emoji", sans-serif';
 	if (!isBlank) {
 		ctx.fillText(display, ROLE_CARD_WIDTH / 2, centerY);
 	}

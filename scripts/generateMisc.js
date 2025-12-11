@@ -3,6 +3,7 @@
 const path = require('path');
 const fs = require('fs/promises');
 const { createCanvas } = require('canvas');
+require('./utils/fontRegistry'); // Register fonts
 const {
 	CARD_SIZE,
 	EDGE_THICKNESS,
@@ -46,11 +47,11 @@ function paintCardBack(ctx, card, width, height) {
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';
 	ctx.fillStyle = '#ffffff18';
-	ctx.font = `900 ${monogramSize}px "Montserrat", sans-serif`;
+	ctx.font = `900 ${monogramSize}px "Montserrat", "Noto Color Emoji", sans-serif`;
 	ctx.fillText(card.label.slice(0, 1), width / 2, height / 2);
 
 	ctx.fillStyle = card.textColor || BODY_TEXT_COLOR;
-	ctx.font = `800 ${labelSize}px "Montserrat", sans-serif`;
+	ctx.font = `800 ${labelSize}px "Montserrat", "Noto Color Emoji", sans-serif`;
 	drawLabel(ctx, card, width, height, labelSize);
 
 	if (card.key === 'role') {

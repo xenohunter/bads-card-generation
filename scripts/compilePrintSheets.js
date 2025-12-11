@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const fsSync = require('fs');
 const { createCanvas, loadImage } = require('canvas');
+require('./utils/fontRegistry'); // Register fonts
 const PDFDocument = require('pdfkit');
 const { CARD_SIZE, ROLE_CARD_WIDTH, ROLE_CARD_HEIGHT, TICKET_CARD_SIZE } = require('./utils/constants');
 const { resolveOutputPath, LOCALE } = require('./utils/runtimeConfig');

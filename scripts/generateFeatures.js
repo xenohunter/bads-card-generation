@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const { createCanvas } = require('canvas');
 const { parse } = require('csv-parse/sync');
+require('./utils/fontRegistry'); // Register fonts
 const {
 	CARD_SIZE,
 	EDGE_THICKNESS,
@@ -21,7 +22,7 @@ const { shouldIgnoreRecord } = require('./utils/recordFilters');
 const { paintEdgesAndDividers } = require('./utils/edgePainter');
 const { resolveOutputPath } = require('./utils/runtimeConfig');
 const { getLocalizedText } = require('./utils/textHelpers');
-const MARKET_LABEL_FONT = '700 20px "Roboto Mono", "Courier New", monospace';
+const MARKET_LABEL_FONT = '700 20px "Roboto Mono", "Noto Color Emoji", "Courier New", monospace';
 const BLANK_SCORE_WIDTH_TOKEN = '\u2007\u2007\u2007\u2007\u2007\u2007';
 
 async function main() {
@@ -86,15 +87,15 @@ function paintFeatureContent(ctx, record, { isBlank = false } = {}) {
 
 	const title = (record.Title || 'Untitled Feature').trim();
 	ctx.fillStyle = BODY_TEXT_COLOR;
-	ctx.font = '700 30px "Noto Sans", "Montserrat", sans-serif';
+	ctx.font = '700 30px "Noto Sans", "Noto Color Emoji", "Montserrat", sans-serif';
 	ctx.textAlign = 'left';
 	ctx.textBaseline = 'top';
 	ctx.fillText(title, safeZoneLeft, headerBottom + 16);
 
 	let cursorY = headerBottom + 60;
 	ctx.fillStyle = BODY_TEXT_COLOR;
-	ctx.font = '500 19px "Noto Sans", "Montserrat", sans-serif';
-	const description = getLocalizedText(record, ['Text', 'Text (SA - Special Ability; OC - On Completion)']);
+	ctx.font = '500 19px "Noto Sans", "Noto Color Emoji", "Montserrat", sans-serif';
+	const description = getLocalizedText(record, ['Text']);
 	cursorY = drawTextBlock(ctx, description, {
 		x: safeZoneLeft,
 		y: cursorY,
@@ -106,7 +107,7 @@ function paintFeatureContent(ctx, record, { isBlank = false } = {}) {
 	const funny = record['Funny text'];
 	if (funny && funny.trim()) {
 		cursorY += 18;
-		ctx.font = 'italic 500 18px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = 'italic 500 18px "Noto Sans", "Noto Color Emoji", "Montserrat", sans-serif';
 		ctx.fillStyle = '#5c4d40';
 		drawTextBlock(ctx, funny, {
 			x: safeZoneLeft,
@@ -282,7 +283,7 @@ function drawScorePill(ctx, scoreValue, safeZoneRight, metrics, { isBlank = fals
 		ctx.fillStyle = '#a0692b';
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
-		ctx.font = '700 24px "Montserrat", sans-serif';
+		ctx.font = '700 24px "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillText(scoreValue, pillX + metrics.width / 2, pillY + metrics.height / 2);
 	}
 

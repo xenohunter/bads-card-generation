@@ -2,6 +2,7 @@
 
 const path = require('path');
 const fs = require('fs/promises');
+require('./utils/fontRegistry'); // Register fonts
 const { drawFeatureCard } = require('./generateFeatures');
 const { drawAbilityCard } = require('./generateAbilities');
 const { drawMilestoneFront, drawMilestoneBack } = require('./generateMilestones');

@@ -2,10 +2,37 @@
 
 This repo features the pipeline for generation of all cards for the board game B2B AI Dating SaaS, and the consequent package of those cards into atlases fit to use in Tabletop Simulator.
 
-## Generate the cards
+## Setup
+
+### 1. Install dependencies
 
 ```bash
 yarn install
+```
+
+### 2. Download fonts
+
+The card generators require fonts to be placed in the `fonts/` directory. Download these three font files:
+
+```bash
+mkdir -p fonts
+cd fonts
+
+# Noto Sans (for body text)
+wget "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSans/NotoSans-Regular.ttf"
+wget "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSans/NotoSans-Bold.ttf"
+
+# Noto Color Emoji (for emoji rendering - REQUIRED)
+wget "https://github.com/googlefonts/noto-emoji/raw/main/fonts/NotoColorEmoji.ttf"
+
+cd ..
+```
+
+**Note:** The NotoColorEmoji.ttf font is essential for proper emoji rendering (🅰️, 🚀, etc.). Without it, emojis will appear as boxes with Unicode codes.
+
+## Generate the cards
+
+```bash
 yarn generate
 ```
 

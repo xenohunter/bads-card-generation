@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const { createCanvas } = require('canvas');
 const { parse } = require('csv-parse/sync');
+require('./utils/fontRegistry'); // Register fonts
 const {
 	CARD_SIZE,
 	EDGE_THICKNESS,
@@ -76,7 +77,7 @@ function paintAbilityContent(ctx, record, { isBlank = false } = {}) {
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'top';
 		ctx.fillStyle = BODY_TEXT_COLOR;
-		ctx.font = '700 34px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = '700 34px "Noto Sans", "Noto Color Emoji", "Montserrat", sans-serif';
 		ctx.fillText(title, CARD_SIZE / 2, top);
 	}
 
@@ -93,7 +94,7 @@ function paintAbilityContent(ctx, record, { isBlank = false } = {}) {
 	let cursorY = top + 60;
 	ctx.textAlign = 'left';
 	ctx.fillStyle = BODY_TEXT_COLOR;
-	ctx.font = '500 20px "Noto Sans", "Montserrat", sans-serif';
+	ctx.font = '500 20px "Noto Sans", "Noto Color Emoji", "Montserrat", sans-serif';
 	const description = getLocalizedText(record, ['Text']);
 	cursorY = drawTextBlock(ctx, description, {
 		x: safeLeft,
@@ -106,7 +107,7 @@ function paintAbilityContent(ctx, record, { isBlank = false } = {}) {
 	const funny = record['Funny text'];
 	if (funny && funny.trim()) {
 		cursorY += 20;
-		ctx.font = 'italic 500 18px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = 'italic 500 18px "Noto Sans", "Noto Color Emoji", "Montserrat", sans-serif';
 		ctx.fillStyle = '#5c4d40';
 		drawTextBlock(ctx, funny, {
 			x: safeLeft,

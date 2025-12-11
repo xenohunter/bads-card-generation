@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const { createCanvas } = require('canvas');
 const { parse } = require('csv-parse/sync');
+require('./utils/fontRegistry'); // Register fonts
 const {
 	CARD_SIZE,
 	EDGE_THICKNESS,
@@ -95,7 +96,7 @@ function paintCopy(ctx, record, { isBlank = false } = {}) {
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'top';
 		ctx.fillStyle = BODY_TEXT_COLOR;
-		ctx.font = '700 28px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = '700 28px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillText((record.Title || '').trim(), CARD_SIZE / 2, EDGE_THICKNESS + 16);
 	}
 
@@ -113,7 +114,7 @@ function paintCopy(ctx, record, { isBlank = false } = {}) {
 
 	// Body copy (smaller font)
 	ctx.textAlign = 'left';
-	const bodyFont = '500 18px "Noto Sans", "Montserrat", sans-serif';
+	const bodyFont = '500 18px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 	ctx.font = bodyFont;
 
 	let cursorY = EDGE_THICKNESS + 70;
@@ -121,7 +122,7 @@ function paintCopy(ctx, record, { isBlank = false } = {}) {
 	const bodyLineHeight = 24;
 	const blankLineHeight = 22;
 	if (tierCallout) {
-		ctx.font = '700 18px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = '700 18px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillText(tierCallout, safeZoneLeft, cursorY);
 		cursorY += bodyLineHeight;
 		cursorY += blankLineHeight;
@@ -139,7 +140,7 @@ function paintCopy(ctx, record, { isBlank = false } = {}) {
 	const stats = buildStats(record);
 	if (stats.length) {
 		cursorY += 30;
-		ctx.font = '600 16px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = '600 16px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillStyle = '#3a3028';
 		cursorY = drawStats(ctx, stats, safeZoneLeft, cursorY, contentWidth);
 	}
@@ -147,7 +148,7 @@ function paintCopy(ctx, record, { isBlank = false } = {}) {
 	const funny = record['Funny text'];
 	if (funny && funny.trim()) {
 		cursorY += 18;
-		ctx.font = 'italic 500 18px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = 'italic 500 18px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		cursorY = drawTextBlock(ctx, funny, {
 			x: safeZoneLeft,
 			y: cursorY,
@@ -199,18 +200,18 @@ function paintBack(ctx, record, { isBlank = false } = {}) {
 	ctx.fillStyle = '#3a3028';
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'top';
-	ctx.font = '700 40px "Noto Sans", "Montserrat", sans-serif';
+	ctx.font = '700 40px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 	ctx.fillText('Milestone', CARD_SIZE / 2, EDGE_THICKNESS + 20);
 
 	if (!isBlank) {
 		ctx.textBaseline = 'middle';
 		ctx.fillStyle = accent;
-		ctx.font = '800 200px "Montserrat", sans-serif';
+		ctx.font = '800 200px "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillText(String(tier), CARD_SIZE / 2, CARD_SIZE / 2 + 40);
 
 		ctx.textBaseline = 'bottom';
 		ctx.fillStyle = '#675748';
-		ctx.font = '600 28px "Noto Sans", "Montserrat", sans-serif';
+		ctx.font = '600 28px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillText(`Tier ${tier}`, CARD_SIZE / 2, CARD_SIZE - EDGE_THICKNESS - 20);
 	}
 }
@@ -262,7 +263,7 @@ function drawStats(ctx, stats, x, startY, maxWidth) {
 	ctx.fill();
 
 	ctx.fillStyle = '#3a3028';
-	ctx.font = '600 16px "Noto Sans", "Montserrat", sans-serif';
+	ctx.font = '600 16px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 
 	let cursorY = startY;
 	stats.forEach((stat) => {

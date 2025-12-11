@@ -3,6 +3,7 @@
 const path = require('path');
 const fs = require('fs/promises');
 const { createCanvas, loadImage } = require('canvas');
+require('./utils/fontRegistry'); // Register fonts
 const { CARD_SIZE, ROLE_CARD_WIDTH, ROLE_CARD_HEIGHT, TICKET_CARD_SIZE } = require('./utils/constants');
 const { resolveOutputPath, LOCALE } = require('./utils/runtimeConfig');
 
