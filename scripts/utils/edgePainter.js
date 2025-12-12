@@ -1,9 +1,4 @@
-const {
-	CARD_SIZE,
-	EDGE_THICKNESS,
-	EDGE_COLORS,
-	STRIPE_COLORS
-} = require('./constants');
+const { CARD_SIZE, EDGE_THICKNESS } = require('./constants');
 
 const EDGE_DEFINITIONS = [
 	{ key: 'North edge', position: 'north' },
@@ -16,80 +11,104 @@ function paintEdgesAndDividers(ctx, record = {}, options = {}) {
 	const { edgeColorOverride } = options;
 	EDGE_DEFINITIONS.forEach(({ key, position }) => {
 		const value = (record[key] || '').trim();
-		if (!edgeColorOverride && !value) return;
-		drawEdge(ctx, position, value, edgeColorOverride);
+		if (edgeColorOverride) {
+			drawEdgeBackground(ctx, position, edgeColorOverride);
+		} else if (value) {
+			drawConnector(ctx, position, value);
+		}
 	});
-
-	drawCornerDividers(ctx);
 }
 
-function drawCornerDividers(ctx) {
-	const dividerColor = '#333';
-	ctx.save();
-	ctx.strokeStyle = dividerColor;
-	ctx.lineWidth = 4;
-	const lines = [
-		[
-			{ x: 0, y: 0 },
-			{ x: EDGE_THICKNESS, y: EDGE_THICKNESS }
-		],
-		[
-			{ x: CARD_SIZE - EDGE_THICKNESS, y: EDGE_THICKNESS },
-			{ x: CARD_SIZE, y: 0 }
-		],
-		[
-			{ x: 0, y: CARD_SIZE },
-			{ x: EDGE_THICKNESS, y: CARD_SIZE - EDGE_THICKNESS }
-		],
-		[
-			{ x: CARD_SIZE - EDGE_THICKNESS, y: CARD_SIZE - EDGE_THICKNESS },
-			{ x: CARD_SIZE, y: CARD_SIZE }
-		]
-	];
-
-	lines.forEach(([start, end]) => {
-		ctx.beginPath();
-		ctx.moveTo(start.x, start.y);
-		ctx.lineTo(end.x, end.y);
-		ctx.stroke();
-	});
-	ctx.restore();
-}
-
-function drawEdge(ctx, position, code, overrideColor) {
+function drawEdgeBackground(ctx, position, color) {
 	const rect = edgeRect(position);
 	withEdgeClip(ctx, position, () => {
-		if (overrideColor) {
-			ctx.fillStyle = overrideColor;
-			ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-			return;
-		}
-		if (code === '*') {
-			drawStripedEdge(ctx, rect, position);
-			return;
-		}
-
-		const color = EDGE_COLORS[code] || '#cbd5e0';
 		ctx.fillStyle = color;
 		ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
 	});
 }
 
-function drawStripedEdge(ctx, rect, position) {
-	const stripeWidth = 10;
-	const stripesCount = Math.ceil((position === 'north' || position === 'south' ? rect.width : rect.height) / stripeWidth);
-	for (let i = 0; i < stripesCount; i++) {
-		const color = STRIPE_COLORS[i % STRIPE_COLORS.length];
-		ctx.fillStyle = color;
-		if (position === 'north') {
-			ctx.fillRect(rect.x + i * stripeWidth, rect.y, stripeWidth, rect.height);
-		} else if (position === 'south') {
-			ctx.fillRect(rect.x + i * stripeWidth, rect.y, stripeWidth, rect.height);
-		} else if (position === 'east') {
-			ctx.fillRect(rect.x, rect.y + i * stripeWidth, rect.width, stripeWidth);
-		} else if (position === 'west') {
-			ctx.fillRect(rect.x, rect.y + i * stripeWidth, rect.width, stripeWidth);
+const CONNECTOR_LINE_WIDTH = 8;
+const CONNECTOR_SIZE = EDGE_THICKNESS * 2.8;
+const CONNECTOR_RADIUS = CONNECTOR_SIZE * 0.5;
+const CONNECTOR_STROKE = '#1e1b16';
+
+function drawConnector(ctx, position, rawCode) {
+	const code = normalizeConnectorCode(rawCode);
+	if (!code) {
+		return;
+	}
+	const center = edgeCenter(position);
+	if (!center) {
+		return;
+	}
+
+	withEdgeClip(ctx, position, () => {
+		ctx.save();
+		ctx.strokeStyle = CONNECTOR_STROKE;
+		ctx.lineWidth = CONNECTOR_LINE_WIDTH;
+		ctx.lineJoin = 'round';
+		ctx.lineCap = 'round';
+		switch (code) {
+			case 'R':
+				drawSquare(ctx, center, CONNECTOR_SIZE);
+				break;
+			case 'T':
+				drawDiamond(ctx, center, CONNECTOR_SIZE);
+				break;
+			case 'C':
+				drawCircle(ctx, center, CONNECTOR_RADIUS);
+				break;
+			default:
+				break;
 		}
+		ctx.restore();
+	});
+}
+
+function normalizeConnectorCode(value) {
+	const normalized = String(value || '').trim().toUpperCase();
+	if (!normalized || normalized === '-' || normalized === '*') {
+		return null;
+	}
+	return ['R', 'T', 'C'].includes(normalized) ? normalized : null;
+}
+
+function drawSquare(ctx, center, size) {
+	const half = size / 2;
+	ctx.beginPath();
+	ctx.rect(center.x - half, center.y - half, size, size);
+	ctx.stroke();
+}
+
+function drawCircle(ctx, center, radius) {
+	ctx.beginPath();
+	ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+	ctx.stroke();
+}
+
+function drawDiamond(ctx, center, size) {
+	const half = size / 2;
+	ctx.beginPath();
+	ctx.moveTo(center.x, center.y - half);
+	ctx.lineTo(center.x + half, center.y);
+	ctx.lineTo(center.x, center.y + half);
+	ctx.lineTo(center.x - half, center.y);
+	ctx.closePath();
+	ctx.stroke();
+}
+
+function edgeCenter(position) {
+	switch (position) {
+		case 'north':
+			return { x: CARD_SIZE / 2, y: -20 };
+		case 'south':
+			return { x: CARD_SIZE / 2, y: CARD_SIZE + 20 };
+		case 'east':
+			return { x: CARD_SIZE + 20, y: CARD_SIZE / 2 };
+		case 'west':
+			return { x: -20, y: CARD_SIZE / 2 };
+		default:
+			return null;
 	}
 }
 

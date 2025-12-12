@@ -54,6 +54,12 @@ async function drawFeatureCard(filePath, record, options = {}) {
 	const ctx = canvas.getContext('2d');
 
 	paintBackground(ctx);
+	if (!isBlank) {
+		const watermarkScore = formatScore(record['Score Points']);
+		if (watermarkScore !== '') {
+			paintScoreWatermark(ctx, watermarkScore);
+		}
+	}
 	const edgeOptions = isBlank ? { edgeColorOverride: '#ffffff' } : undefined;
 	paintEdgesAndDividers(ctx, record, edgeOptions);
 	paintFeatureContent(ctx, record, { isBlank });
@@ -64,10 +70,6 @@ async function drawFeatureCard(filePath, record, options = {}) {
 function paintBackground(ctx) {
 	ctx.fillStyle = BACKGROUND_COLOR;
 	ctx.fillRect(0, 0, CARD_SIZE, CARD_SIZE);
-
-	ctx.strokeStyle = '#d4cdc3';
-	ctx.lineWidth = 4;
-	ctx.strokeRect(EDGE_THICKNESS / 2, EDGE_THICKNESS / 2, CARD_SIZE - EDGE_THICKNESS, CARD_SIZE - EDGE_THICKNESS);
 }
 
 function paintFeatureContent(ctx, record, { isBlank = false } = {}) {
@@ -118,6 +120,24 @@ function paintHeaderRow(ctx, record, safeZoneRight, { isBlank = false } = {}) {
 	const pillMetrics = measureScorePill(ctx, pillMeasurementValue);
 	const scoreBottom = drawScorePill(ctx, scoreValue, safeZoneRight, pillMetrics, { isBlank });
 	return scoreBottom;
+}
+
+function paintScoreWatermark(ctx, scoreValue) {
+	if (scoreValue === null || scoreValue === undefined) {
+		return;
+	}
+	const text = String(scoreValue).trim();
+	if (!text) {
+		return;
+	}
+	ctx.save();
+	ctx.globalAlpha = 0.1;
+	ctx.fillStyle = '#1c140d';
+	ctx.font = '900 320px "Montserrat", "Noto Sans", "Noto Color Emoji", sans-serif';
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+	ctx.fillText(text, CARD_SIZE / 2, CARD_SIZE / 2);
+	ctx.restore();
 }
 
 function drawRoundedRect(ctx, x, y, width, height, radius, stroke = false) {
@@ -197,9 +217,10 @@ function drawWrappedLine(ctx, text, x, startY, maxWidth, lineHeight) {
 function formatScore(value) {
 	const numeric = Number(value);
 	if (Number.isNaN(numeric)) {
-		return String(value ?? '0');
+		const fallback = String(value ?? '').trim();
+		return fallback;
 	}
-	return numeric > 0 ? `+${numeric}` : `${numeric}`;
+	return `${numeric}`;
 }
 
 function normalizeCopies(value) {

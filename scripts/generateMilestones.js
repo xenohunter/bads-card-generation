@@ -61,9 +61,6 @@ function paintBackground(ctx) {
 	ctx.fillStyle = BACKGROUND_COLOR;
 	ctx.fillRect(0, 0, CARD_SIZE, CARD_SIZE);
 
-	ctx.strokeStyle = '#d4cdc3';
-	ctx.lineWidth = 4;
-	ctx.strokeRect(EDGE_THICKNESS / 2, EDGE_THICKNESS / 2, CARD_SIZE - EDGE_THICKNESS, CARD_SIZE - EDGE_THICKNESS);
 }
 
 
@@ -72,6 +69,12 @@ async function drawMilestoneFront(filePath, record, options = {}) {
 	const ctx = canvas.getContext('2d');
 	const isBlank = options.blank === true || record.__blank === true;
 	paintBackground(ctx);
+	if (!isBlank) {
+		const scoreValue = formatScoreValue(record['Score Points']);
+		if (scoreValue) {
+			paintScoreWatermark(ctx, scoreValue);
+		}
+	}
 	const edgeOptions = isBlank ? { edgeColorOverride: '#ffffff' } : undefined;
 	paintEdgesAndDividers(ctx, record, edgeOptions);
 	paintCopy(ctx, record, { isBlank });
@@ -180,10 +183,6 @@ function paintBack(ctx, record, { isBlank = false } = {}) {
 	ctx.fillStyle = '#fbf4ec';
 	ctx.fillRect(0, 0, CARD_SIZE, CARD_SIZE);
 
-	ctx.strokeStyle = '#d4cdc3';
-	ctx.lineWidth = 4;
-	ctx.strokeRect(EDGE_THICKNESS / 2, EDGE_THICKNESS / 2, CARD_SIZE - EDGE_THICKNESS, CARD_SIZE - EDGE_THICKNESS);
-
 	const gradient = ctx.createRadialGradient(
 		CARD_SIZE / 2,
 		CARD_SIZE / 2,
@@ -214,6 +213,21 @@ function paintBack(ctx, record, { isBlank = false } = {}) {
 		ctx.font = '600 28px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillText(`Tier ${tier}`, CARD_SIZE / 2, CARD_SIZE - EDGE_THICKNESS - 20);
 	}
+}
+
+function paintScoreWatermark(ctx, scoreValue) {
+	const text = String(scoreValue || '').trim();
+	if (!text) {
+		return;
+	}
+	ctx.save();
+	ctx.globalAlpha = 0.1;
+	ctx.fillStyle = '#1c140d';
+	ctx.font = '900 300px "Montserrat", "Noto Sans", "Noto Color Emoji", sans-serif';
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+	ctx.fillText(text, CARD_SIZE / 2, CARD_SIZE / 2);
+	ctx.restore();
 }
 
 function buildStats(record) {
@@ -294,6 +308,15 @@ function drawTextBlock(ctx, raw = '', options) {
 		cursorY = drawWrappedLine(ctx, line, x, cursorY, maxWidth, lineHeight);
 	});
 	return cursorY;
+}
+
+function formatScoreValue(value) {
+	const numeric = Number(value);
+	if (!Number.isNaN(numeric)) {
+		return `${numeric}`;
+	}
+	const fallback = String(value ?? '').trim();
+	return fallback;
 }
 
 function drawWrappedLine(ctx, text, x, startY, maxWidth, lineHeight) {
