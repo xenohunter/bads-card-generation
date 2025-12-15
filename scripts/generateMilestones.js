@@ -9,7 +9,6 @@ const {
 	CARD_SIZE,
 	EDGE_THICKNESS,
 	CONTENT_PADDING,
-	BACKGROUND_COLOR,
 	BODY_TEXT_COLOR,
 	TIER_COLORS
 } = require('./utils/constants');
@@ -17,6 +16,8 @@ const { paintEdgesAndDividers } = require('./utils/edgePainter');
 const { shouldIgnoreRecord } = require('./utils/recordFilters');
 const { resolveOutputPath } = require('./utils/runtimeConfig');
 const { getLocalizedText } = require('./utils/textHelpers');
+
+const MILESTONE_FACE_BACKGROUND = '#dff6c2';
 
 async function main() {
 	const csvPath = path.resolve(__dirname, '../data/milestones.csv');
@@ -58,7 +59,7 @@ function withBackPrefix(baseName) {
 }
 
 function paintBackground(ctx) {
-	ctx.fillStyle = BACKGROUND_COLOR;
+	ctx.fillStyle = MILESTONE_FACE_BACKGROUND;
 	ctx.fillRect(0, 0, CARD_SIZE, CARD_SIZE);
 
 }
@@ -257,7 +258,7 @@ function drawStats(ctx, stats, x, startY, maxWidth) {
 
 	const contentHeight = stats.length * lineHeight + (stats.length - 1) * verticalGap;
 	const backgroundHeight = contentHeight + paddingY * 2;
-	ctx.fillStyle = '#f1e3d4';
+	ctx.fillStyle = '#b5d99c';
 	ctx.beginPath();
 	const radius = 10;
 	const bgLeft = x - paddingX;
