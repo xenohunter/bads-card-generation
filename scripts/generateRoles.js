@@ -18,6 +18,8 @@ const { shouldIgnoreRecord } = require('./utils/recordFilters');
 const { resolveOutputPath } = require('./utils/runtimeConfig');
 const { getLocalizedText } = require('./utils/textHelpers');
 
+const FOUNDER_TITLE = 'The Founder';
+
 async function main() {
 	const csvPath = path.resolve(__dirname, '../data/roles.csv');
 	const outputDir = resolveOutputPath('roles');
@@ -36,18 +38,23 @@ async function main() {
 		(record) => Boolean((record.Title || '').trim()) && !shouldIgnoreRecord(record)
 	);
 
+	if (!validRoles.some(isFounderRecord)) {
+		throw new Error('The Founder role is required in roles.csv but was not found.');
+	}
+
 	await Promise.all(
 		validRoles.map(async (record) => {
 			const title = (record.Title || 'Role').trim();
-			const orderRaw = (record.Order || '').trim();
-			const orderPrefix = orderRaw ? orderRaw.padStart(2, '0') : '00';
-			const baseName = `${orderPrefix}.${sanitizeFileName(title)}`;
-			const filePath = path.join(outputDir, `${baseName}.png`);
-			await drawRoleCard(filePath, record);
+			const safeTitle = sanitizeFileName(title) || 'Role';
+			const facePath = path.join(outputDir, `${safeTitle}.png`);
+			await drawRoleCard(facePath, record);
+
+			const backPath = path.join(outputDir, `${withBackPrefix(safeTitle)}.png`);
+			await drawRoleBack(backPath, record);
 		})
 	);
 
-	console.log(`Generated ${validRoles.length} role cards in ${outputDir}`);
+	console.log(`Generated ${validRoles.length * 2} role card face/back images in ${outputDir}`);
 }
 
 async function drawRoleCard(filePath, record, options = {}) {
@@ -55,6 +62,14 @@ async function drawRoleCard(filePath, record, options = {}) {
 	const ctx = canvas.getContext('2d');
 	paintBackground(ctx);
 	paintRoleContent(ctx, record, { isBlank: options.blank === true || record.__blank === true });
+	await fs.writeFile(filePath, canvas.toBuffer('image/png'));
+}
+
+async function drawRoleBack(filePath, record, options = {}) {
+	const canvas = createCanvas(ROLE_CARD_WIDTH, ROLE_CARD_HEIGHT);
+	const ctx = canvas.getContext('2d');
+	paintBackground(ctx);
+	paintRoleBack(ctx, record, { isBlank: options.blank === true || record.__blank === true });
 	await fs.writeFile(filePath, canvas.toBuffer('image/png'));
 }
 
@@ -78,26 +93,64 @@ function paintBackground(ctx) {
 	ctx.fillRect(EDGE_THICKNESS, EDGE_THICKNESS, ROLE_CARD_WIDTH - EDGE_THICKNESS * 2, ROLE_CARD_HEIGHT - EDGE_THICKNESS * 2);
 }
 
+function paintRoleBack(ctx, record, { isBlank = false } = {}) {
+	const centerX = ROLE_CARD_WIDTH / 2;
+	const centerY = ROLE_CARD_HEIGHT / 2;
+
+	const glow = ctx.createRadialGradient(centerX, centerY, 40, centerX, centerY, ROLE_CARD_HEIGHT / 2);
+	glow.addColorStop(0, `${ROLE_ACCENT_COLOR}33`);
+	glow.addColorStop(1, `${ROLE_ACCENT_COLOR}00`);
+	ctx.fillStyle = glow;
+	ctx.fillRect(EDGE_THICKNESS, EDGE_THICKNESS, ROLE_CARD_WIDTH - EDGE_THICKNESS * 2, ROLE_CARD_HEIGHT - EDGE_THICKNESS * 2);
+
+	ctx.strokeStyle = `${ROLE_ACCENT_COLOR}66`;
+	ctx.lineWidth = 6;
+	ctx.beginPath();
+	ctx.arc(centerX, centerY, ROLE_CARD_WIDTH * 0.32, 0, Math.PI * 2);
+	ctx.stroke();
+
+	ctx.fillStyle = `${ROLE_ACCENT_COLOR}10`;
+	ctx.beginPath();
+	ctx.arc(centerX, centerY, ROLE_CARD_WIDTH * 0.28, 0, Math.PI * 2);
+	ctx.fill();
+
+	if (isBlank) {
+		return;
+	}
+
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+	ctx.fillStyle = BODY_TEXT_COLOR;
+	ctx.font = '600 20px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
+	ctx.fillText('ROLE CARD', centerX, centerY);
+
+	if (isFounderRecord(record)) {
+		drawFounderStar(ctx, centerX, EDGE_THICKNESS + 100);
+	}
+}
+
 function paintRoleContent(ctx, record, { isBlank = false } = {}) {
 	const safeLeft = EDGE_THICKNESS + CONTENT_PADDING;
 	const safeRight = ROLE_CARD_WIDTH - EDGE_THICKNESS - CONTENT_PADDING;
+	const safeTop = EDGE_THICKNESS + CONTENT_PADDING;
 	const contentWidth = safeRight - safeLeft;
 
 	const title = (record.Title || 'Role').trim();
-	const order = (record.Order || '').trim();
+	const isFounder = isFounderRecord(record);
 
-	const heroBottom = drawRoleNumber(ctx, order, isBlank);
-
-	const titleY = heroBottom + 16;
+	let titleY = safeTop;
+	let titleFontSize = 0;
 	if (!isBlank) {
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'top';
 		ctx.fillStyle = BODY_TEXT_COLOR;
-		ctx.font = '800 42px "Montserrat", "Noto Color Emoji", sans-serif';
+		const fittedFont = fitTitleFont(ctx, title, contentWidth);
+		titleFontSize = fittedFont.size;
+		ctx.font = fittedFont.font;
 		ctx.fillText(title, ROLE_CARD_WIDTH / 2, titleY);
 	}
 
-	const dividerY = titleY + 52;
+	const dividerY = titleY + (titleFontSize || 44) + 18;
 	ctx.strokeStyle = '#d9cbbd';
 	ctx.lineWidth = 2;
 	ctx.beginPath();
@@ -109,7 +162,7 @@ function paintRoleContent(ctx, record, { isBlank = false } = {}) {
 		return;
 	}
 
-	let cursorY = dividerY + 18;
+	let cursorY = dividerY + 24;
 	const text = getLocalizedText(record, ['Text']);
 	if (text) {
 		ctx.textAlign = 'left';
@@ -125,10 +178,10 @@ function paintRoleContent(ctx, record, { isBlank = false } = {}) {
 
 	const funny = (record['Funny text'] || '').trim();
 	if (funny) {
-		cursorY += 20;
+		cursorY += 24;
 		ctx.font = 'italic 500 18px "Noto Sans", "Noto Color Emoji", "Montserrat", "Noto Color Emoji", sans-serif';
 		ctx.fillStyle = '#5c4d40';
-		drawTextBlock(ctx, funny, {
+		cursorY = drawTextBlock(ctx, funny, {
 			x: safeLeft,
 			y: cursorY,
 			maxWidth: contentWidth,
@@ -136,26 +189,14 @@ function paintRoleContent(ctx, record, { isBlank = false } = {}) {
 			blankLineHeight: 20
 		});
 	}
-}
 
-function drawRoleNumber(ctx, order, isBlank) {
-	const display = order ? order.padStart(2, '0') : '--';
-	const centerY = EDGE_THICKNESS + 120;
-	ctx.textAlign = 'center';
-	ctx.textBaseline = 'middle';
-	ctx.fillStyle = `${ROLE_ACCENT_COLOR}15`;
-	ctx.font = '900 200px "Montserrat", "Noto Color Emoji", sans-serif';
-	if (!isBlank) {
-		ctx.fillText(display, ROLE_CARD_WIDTH / 2, centerY);
+	if (isFounder && !isBlank) {
+		cursorY += 40;
+		const starDefaultY = ROLE_CARD_HEIGHT - EDGE_THICKNESS - CONTENT_PADDING - 40;
+		const starMinY = cursorY + 34;
+		const starCenterY = Math.min(starDefaultY, Math.max(starMinY, safeTop + 80));
+		drawFounderStar(ctx, ROLE_CARD_WIDTH / 2, starCenterY + 40, { outerRadius: 36, innerRadius: 18 });
 	}
-
-	ctx.fillStyle = ROLE_ACCENT_COLOR;
-	ctx.font = '800 60px "Montserrat", "Noto Color Emoji", sans-serif';
-	if (!isBlank) {
-		ctx.fillText(display, ROLE_CARD_WIDTH / 2, centerY);
-	}
-
-	return centerY + 80;
 }
 
 function drawTextBlock(ctx, raw = '', options) {
@@ -216,6 +257,65 @@ function sanitizeFileName(value) {
 	return value.replace(/[^a-z0-9._-]+/gi, '_');
 }
 
+function withBackPrefix(baseName) {
+	return `back-${baseName}`;
+}
+
+function isFounderRecord(record = {}) {
+	return (record.Title || '').trim().toLowerCase() === FOUNDER_TITLE.toLowerCase();
+}
+
+function drawFounderStar(ctx, x, y, { outerRadius = 60, innerRadius = 28 } = {}) {
+	ctx.save();
+	ctx.shadowColor = '#00000033';
+	ctx.shadowBlur = 12;
+	drawStarPath(ctx, x, y, 5, outerRadius, innerRadius);
+	const gradient = ctx.createLinearGradient(x, y - outerRadius, x, y + outerRadius);
+	gradient.addColorStop(0, '#fff3b0');
+	gradient.addColorStop(1, '#f6a328');
+	ctx.fillStyle = gradient;
+	ctx.fill();
+	ctx.shadowBlur = 0;
+	ctx.lineWidth = 4;
+	ctx.strokeStyle = '#d08a00';
+	ctx.stroke();
+	ctx.restore();
+}
+
+function drawStarPath(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+	let rotation = Math.PI / 2 * 3;
+	const step = Math.PI / spikes;
+	ctx.beginPath();
+	ctx.moveTo(cx, cy - outerRadius);
+	for (let i = 0; i < spikes; i++) {
+		let x = cx + Math.cos(rotation) * outerRadius;
+		let y = cy + Math.sin(rotation) * outerRadius;
+		ctx.lineTo(x, y);
+		rotation += step;
+
+		x = cx + Math.cos(rotation) * innerRadius;
+		y = cy + Math.sin(rotation) * innerRadius;
+		ctx.lineTo(x, y);
+		rotation += step;
+	}
+	ctx.lineTo(cx, cy - outerRadius);
+	ctx.closePath();
+}
+
+function fitTitleFont(ctx, text, maxWidth) {
+	const baseSize = 42;
+	const minSize = 22;
+	for (let size = baseSize; size >= minSize; size -= 2) {
+		const font = `800 ${size}px "Montserrat", "Noto Color Emoji", sans-serif`;
+		ctx.font = font;
+		if (ctx.measureText(text).width <= maxWidth || size === minSize) {
+			return { font, size };
+		}
+	}
+	const fallbackFont = `800 ${minSize}px "Montserrat", "Noto Color Emoji", sans-serif`;
+	return { font: fallbackFont, size: minSize };
+}
+
 if (require.main === module) {
 	main().catch((error) => {
 		console.error('Failed to generate role cards:', error);
@@ -224,5 +324,6 @@ if (require.main === module) {
 }
 
 module.exports = {
-	drawRoleCard
+	drawRoleCard,
+	drawRoleBack
 };

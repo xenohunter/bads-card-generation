@@ -10,6 +10,11 @@ const { resolveOutputPath, LOCALE } = require('./utils/runtimeConfig');
 const ATLAS_COLUMNS = 10;
 const ATLAS_ROWS = 7;
 const CARDS_PER_ATLAS = ATLAS_COLUMNS * ATLAS_ROWS;
+const FOUNDER_TITLE = 'The Founder';
+const FOUNDER_FACE_FILE = `${sanitizeFileName(FOUNDER_TITLE)}.png`;
+const FOUNDER_BACK_FILE = `back-${sanitizeFileName(FOUNDER_TITLE)}.png`;
+const prioritizeFounderFace = createFilePriorityComparator(FOUNDER_FACE_FILE);
+const prioritizeFounderBack = createFilePriorityComparator(FOUNDER_BACK_FILE);
 
 const CARD_GROUPS = [
 	{
@@ -48,9 +53,19 @@ const CARD_GROUPS = [
 		label: 'Role faces',
 		prefix: 'role-faces',
 		dir: resolveOutputPath('roles'),
-		filter: (name) => name.endsWith('.png'),
+		filter: (name) => name.endsWith('.png') && !name.startsWith('back-'),
 		cardWidth: ROLE_CARD_WIDTH,
-		cardHeight: ROLE_CARD_HEIGHT
+		cardHeight: ROLE_CARD_HEIGHT,
+		sorter: prioritizeFounderFace
+	},
+	{
+		label: 'Role backs',
+		prefix: 'role-backs',
+		dir: resolveOutputPath('roles'),
+		filter: (name) => name.endsWith('.png') && name.startsWith('back-'),
+		cardWidth: ROLE_CARD_WIDTH,
+		cardHeight: ROLE_CARD_HEIGHT,
+		sorter: prioritizeFounderBack
 	},
 	{
 		label: 'Ticket faces',
@@ -98,13 +113,36 @@ async function main() {
 async function readCards(group) {
 	try {
 		const entries = await fs.readdir(group.dir);
-		return entries.filter(group.filter).sort();
+		const filtered = entries.filter(group.filter);
+		if (typeof group.sorter === 'function') {
+			return filtered.sort(group.sorter);
+		}
+		return filtered.sort();
 	} catch (error) {
 		if (error.code === 'ENOENT') {
 			return [];
 		}
 		throw error;
 	}
+}
+
+function createFilePriorityComparator(targetFile) {
+	return (a, b) => {
+		if (a === targetFile && b === targetFile) {
+			return 0;
+		}
+		if (a === targetFile) {
+			return -1;
+		}
+		if (b === targetFile) {
+			return 1;
+		}
+		return a.localeCompare(b);
+	};
+}
+
+function sanitizeFileName(value) {
+	return value.replace(/[^a-z0-9._-]+/gi, '_');
 }
 
 async function buildAtlases({ prefix, cards, srcDir, destDir, cardWidth, cardHeight }) {

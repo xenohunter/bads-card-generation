@@ -79,7 +79,6 @@ function createMilestoneRecord() {
 function createRoleRecord() {
 	return {
 		Title: '',
-		Order: '00',
 		Text: '',
 		'Funny text': '',
 		__blank: true
