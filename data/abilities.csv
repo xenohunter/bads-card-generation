@@ -1,47 +1,43 @@
 ID,Addon,Copies,Title,Text,RU Text,Funny text,Notes
-,,2,Delegate,Move any 1 Ticket to a different Feature.,Переместите 1 любой Тикет на другую Фичу.,,
-,,2,Prediction Markets,"Search the Player Deck for 1 specific card, shuffle the Deck, then place the card at the top or bottom of the Player Deck.","Найдите в Player Deck одну конкретную карту, перемешайте колоду, затем положите эту карту на верх или на дно колоды.",,
-,,1,Hawaii Team Retreat,"Each player puts away any number of cards in their hand, then draws as many as was discarded. Shuffle all the cards that were put away, discard 2 of them, and shuffle the rest into the Player Deck.","Каждый игрок откладывает в сторону некоторое количество карт, затем берёт столько же из Player Deck. Перемешайте все отложенные карты, сбросьте две из них, остальные замешайте в колоду.",,
-,,2,Schedule Maneuvering,Place 4 counters total on any 1 or 2 Tickets.,Положите в сумме 4 человеко-часа на любые 1 или 2 Тикета.,,
-,,1,Rebranding,Place as many counters on any DESIGN Tickets as you have Completed DESIGN Tickets among the last 10 in the Work discard pile.,"Положите столько человеко-часов на любые DESIGN Тикеты, сколько у вас есть завершённых DESIGN Тикетов среди последних десяти сброшенных в Work-сброс.",,
+,,2,Delegate,Move any 1 Ticket to a different Feature.,Переместите 1 любую Задачу на другую Фичу.,,
+,,0,Prediction Markets,Take any specific card from the Player Deck in your hand. Shuffle the Deck.,Возьмите из Player Deck любую конкретную карту себе в руку. Перемешайте колоду.,,This card doesn't do anything for those who don't know what cards there are in the Deck.
+,,1,Hawaii Team Retreat,"Everyone shuffles their entire hand in the Player Deck. Then, everyone draws a full hand of cards.","Каждый игрок вмешивает свою руку в Player Deck. Затем, каждый игрок набирает полную руку карт.",,
+,,2,Schedule Maneuvering,Place 4 counters total on any 1 or 2 Tickets.,Положите в сумме 4 токена на любые 1 или 2 Задачи.,,
+,,1,Rebranding,"Count DESIGN Tickets among the last 10 cards in the Work discard pile.
+
+Put that many counters on any DESIGN Ticket.","Посчитайте DESIGN Задачи среди последних 10 карт в Work-сбросе.
+
+Положите столько токенов на любую DESIGN задачу.",,
 ,,1,Fingers In All Pies,Give away any number of cards from your hand to other players. Draw that many cards.,Отдайте любое количество карт из руки другим игрокам. Возьмите столько же карт.,,Dubious title
-,,2,No-Code Solution,Close any TECH Ticket that has 2 or fewer unfilled counter slots.,"Закройте любой TECH Тикет, в котором 2 или меньше незаполненных временных слота.",,
-,,1,"""Streisand Deflect""",Close all Tickets on any single-Market Feature. Add twice as many Tickets to any other Feature.,Закройте все Тикеты на любой одно-Рынковой Фиче. Добавьте вдвое больше Тикетов на любую другую Фичу.,,
-,,2,Hackathon,"Everyone rolls a die. Sum up the results. Subtract the total number of cards in players' hands. Subtract the total number of non-Completed Features. If the result is still positive, put that many counter on any Tickets you want.","Все кидают по кубику. Сложите результаты. Вычтите количество карт у всех игроков. Вычтите общее количество не-Завершённых Фич. Если результат положительный, то положите столько человеко-часов на любые Тикеты.",,
-,,2,Script Kiddie,"Remove 1 counter from any Ticket. Put 2 counters on any TECH Ticket, even if it says you cannot do that.","Уберите 1 человеко-час с любого Тикета. Положите 2 человеко-часа на любой TECH Тикет, даже если там написано, что вы не можете этого сделать.",,
-,,2,Tech Debt,"Close any TECH Ticket. Roll a die.
+,,2,No-Code Solution,Close any TECH Ticket that has no counters on it so far.,"Закройте любую TECH Задачу, на которой ещё нет ни одного токена.",,
+,,1,"""Streisand Deflect""",Close all Tickets on any Feature. Add twice as many Tickets to any other Feature.,Закройте все Задачи на любой Фиче. Добавьте вдвое больше Задач на любую другую Фичу.,,
+,,2,Hackathon,"Everyone rolls a die. Sum up the results. Subtract the total number of cards in players' hands. Subtract the total number of non-Completed Features. If the result is still positive, put that many counter on any Tickets you want.","Все кидают по кубику. Сложите результаты. Вычтите количество карт у всех игроков. Вычтите общее количество не-Завершённых Фич. Если результат положительный, то положите столько токенов на любые Задачи.",,
+,,2,Script Kiddie,"Remove 1 counter from any Ticket. Put 4 counters on any TECH Ticket, even if it says you cannot do that.","Уберите 1 токен с любой Задачи. Положите 4 токена на любую TECH Задачу, даже если там написано, что вы не можете этого сделать.",,
+,,3,Tech Debt,"Close any TECH Ticket. Roll a die.
 
-On 1-2: put 2 new Tickets on the same Feature, or remove 3 counters from other TECH Tickets.
+On 1-2: put 2 new Tickets on the same Feature.","Закройте любую TECH Задачу. Киньте кубик.
 
-On 3-4: put 1 new Ticket on the same Feautre, or remove 2 counters from other TECH Tickets.
-
-On 5-6: remove 1 counter from another TECH Ticket.","Закройте любой TECH Тикет. Киньте кубик.
-
-1-2: положите 2 новых Тикета на ту же Фичу или уберите 3 человеко-часа с других TECH Тикетов.
-
-3-4: положите 1 новый Тикет на ту же Фичу или уберите 2 человеко-часа с других TECH Тикетов.
-
-5-6: уберите 1 человеко-час с другого TECH Тикета.",,
+1-2: положите 2 новых Задачи на ту же Фичу.",,
 ,,3,Creatine Microdosing,Commit 2 actions this turn. Playing this card doesn't spend your action.,"Совершите 2 действия в этом ходу. Играя эту карту, вы не тратите действие.",,
 ,,3,Refactoring,"Move 1 Feature with all its Tickets to a differnt valid place in the Product.
 
-Add 1 extra Ticket on top of it. (Even if the Feature was completed.)","Переместите 1 Фичу со всеми Тикетами в другое валидное место в Продукте.
+Add 1 extra Ticket on top of it. (Even if the Feature was completed.)","Переместите 1 Фичу со всеми Задачами в другое валидное место в Продукте.
 
-Добавьте 1 дополнительный Тикет на неё. (Даже если она была Завершена.)",,
+Добавьте 1 дополнительную Задачу на неё. (Даже если она была Завершена.)",,
 ,,2,Heavy Refactoring,"Move up to 2 Features with all their Tickets to different valid places in the Product.
 
-Add 2 extra Tickets on top of each. (Even if either of the Features was completed.)","Переместите 2 Фичи со всеми Тикетами в другие валидные места в Продукте.
+Add 2 extra Tickets on top of each. (Even if either of the Features was completed.)","Переместите 2 Фичи со всеми Задачами в другие валидные места в Продукте.
 
-Добавьте 2 дополнительных Тикета на неё. (Даже если она была Завершена.)",,
-,,2,Jack Of All Trades,"Place 3 counters on 3 Tickets of different categories (i.e. TECH, DESIGN, etc).",,,
-,,3,Working Overtime,Place 3 counters on any single Ticket.,Положите 3 человеко-часа на 1 любой Тикет.,,
+Добавьте 2 дополнительные Задачи на неё. (Даже если она была Завершена.)",,
+,,2,Jack Of All Trades,"Place 3 counters on 3 Tickets of different categories (i.e. TECH, DESIGN, etc).","Положите 3 токена на 3 Задачи разных категорий (TECH, DESIGN и так далее).",,
+,,3,Working Overtime,Place 5 counters on any single Ticket.,Положите 5 токенов на 1 любую Задачу.,,
 ,,2,Outsource,"Put this card in front of you.
 
 At the beginning of your turn, roll a die. On 1, discard this cards and all counters on it. On 2-6, add a counter to it (up to 5 counters).
 
 During your turn, you may discard this card and put all counter from it on Tickets of your choice. That won't spend your action.","Положите эту карту перед собой.
 
-В начале вашего хода, киньте кубик. Если 1, то сбросьте эту карту и все человеко-часы на ней. Если 2-6, добавьте один человеко-час на неё.
+В начале вашего хода, киньте кубик. Если 1, то сбросьте эту карту и все токены на ней. Если 2-6, добавьте один токен на неё.
 
-В ваш ход, вы можете сбросить эту карту и положить все человеко-часы с неё на Тикеты по вашему выбору. Это не потратит ваше действие.",,
+В ваш ход, вы можете сбросить эту карту и положить все токены с неё на Задачи по вашему выбору. Это не потратит ваше действие.",,
 ,Mafia,2,Coup,Swap Roles with any other player.,,,Probably except for the CEO?
