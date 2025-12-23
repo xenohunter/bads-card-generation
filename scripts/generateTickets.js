@@ -10,11 +10,20 @@ const {
 	CONTENT_PADDING,
 	BODY_TEXT_COLOR,
 	CATEGORY_COLORS,
-	TICKET_CARD_SIZE
+	TICKET_CARD_SIZE,
+	TICKET_DIRECTIVE_COLORS
 } = require('./utils/constants');
 const { shouldIgnoreRecord } = require('./utils/recordFilters');
 const { resolveOutputPath } = require('./utils/runtimeConfig');
 const { getLocalizedText } = require('./utils/textHelpers');
+
+const DIRECTIVE_ICON_STYLES = [
+	{ marker: '[Open]:', letter: 'O', color: TICKET_DIRECTIVE_COLORS.open },
+	{ marker: '[Close]:', letter: 'C', color: TICKET_DIRECTIVE_COLORS.close },
+	{ marker: '[Action]:', letter: 'A', color: TICKET_DIRECTIVE_COLORS.action }
+];
+const DIRECTIVE_ICON_SIZE = 34;
+const DIRECTIVE_ICON_GAP = 14;
 
 async function main() {
 	const csvPath = path.resolve(__dirname, '../data/tickets.csv');
@@ -123,7 +132,8 @@ function paintTicket(ctx, record, { isBlank = false } = {}) {
 			y: cursorY,
 			maxWidth: contentWidth,
 			lineHeight: 24,
-			blankLineHeight: 22
+			blankLineHeight: 22,
+			renderDirectiveIcons: true
 		});
 	}
 
@@ -178,7 +188,7 @@ function paintCounterSlots(ctx, record, left, top, maxWidth) {
 }
 
 function drawTextBlock(ctx, raw = '', options) {
-	const { x, y, maxWidth, lineHeight, blankLineHeight = lineHeight } = options;
+	const { x, y, maxWidth, lineHeight, blankLineHeight = lineHeight, renderDirectiveIcons = false } = options;
 	const normalized = String(raw ?? '')
 		.replace(/\r/g, '')
 		.replace(/\t/g, '    ');
@@ -197,9 +207,48 @@ function drawTextBlock(ctx, raw = '', options) {
 			cursorY += blankLineHeight;
 			return;
 		}
+
+		const directiveInfo = renderDirectiveIcons ? extractDirectiveInfo(line) : null;
+		if (directiveInfo) {
+			const indent = drawDirectiveIcon(ctx, directiveInfo, x, cursorY, lineHeight) + DIRECTIVE_ICON_GAP;
+			const adjustedX = x + indent;
+			const adjustedWidth = Math.max(maxWidth - indent, 10);
+			cursorY = drawWrappedLine(ctx, directiveInfo.text || '', adjustedX, cursorY, adjustedWidth, lineHeight);
+			return;
+		}
+
 		cursorY = drawWrappedLine(ctx, line, x, cursorY, maxWidth, lineHeight);
 	});
 	return cursorY;
+}
+
+function extractDirectiveInfo(line) {
+	const trimmed = line.trimStart();
+	for (const style of DIRECTIVE_ICON_STYLES) {
+		if (trimmed.startsWith(style.marker)) {
+			const text = trimmed.slice(style.marker.length).trimStart();
+			return { ...style, text };
+		}
+	}
+	return null;
+}
+
+function drawDirectiveIcon(ctx, style, x, y, lineHeight) {
+	const radius = DIRECTIVE_ICON_SIZE / 2;
+	const centerX = x + radius;
+	const centerY = y + lineHeight / 2;
+	ctx.save();
+	ctx.fillStyle = style.color;
+	ctx.beginPath();
+	ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+	ctx.fill();
+	ctx.fillStyle = '#fffdf8';
+	ctx.font = '700 14px "Montserrat", "Noto Color Emoji", sans-serif';
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+	ctx.fillText(style.letter, centerX, centerY);
+	ctx.restore();
+	return DIRECTIVE_ICON_SIZE;
 }
 
 function drawWrappedLine(ctx, text, x, startY, maxWidth, lineHeight) {
