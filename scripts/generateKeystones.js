@@ -67,8 +67,7 @@ async function drawKeystoneFront(filePath, record, options = {}) {
 	const isBlank = options.blank === true || record.__blank === true;
 
 	paintFaceBackground(ctx);
-	const edgeOptions = isBlank ? { edgeColorOverride: '#ffffff' } : undefined;
-	paintEdgesAndDividers(ctx, record, edgeOptions);
+	paintEdgesAndDividers(ctx, record);
 	paintKeystoneCopy(ctx, record, { isBlank });
 
 	await fs.writeFile(filePath, canvas.toBuffer('image/png'));

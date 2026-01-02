@@ -49,7 +49,10 @@ const PRINT_SETS = [
 		cardHeight: CARD_SIZE,
 		printWidthMM: PLAYER_CARD_SIZE_MM,
 		printHeightMM: PLAYER_CARD_SIZE_MM,
-		backStrategy: { type: 'staticImage', path: KEYSTONE_BACK_PATH }
+		backStrategy: { type: 'staticImage', path: KEYSTONE_BACK_PATH },
+		emptyCardPath: path.join(MISC_OUTPUT_DIR, 'keystone-empty.png'),
+		fillerScope: 'first-only',
+		extraEmptySheets: 0
 	},
 	{
 		key: 'milestones',
@@ -61,8 +64,7 @@ const PRINT_SETS = [
 		printWidthMM: PLAYER_CARD_SIZE_MM,
 		printHeightMM: PLAYER_CARD_SIZE_MM,
 		backStrategy: { type: 'staticImage', path: MILESTONE_BACK_PATH },
-		emptyCardPath: path.join(MISC_OUTPUT_DIR, 'milestone-empty-front.png'),
-		emptyCardBackPath: path.join(MISC_OUTPUT_DIR, 'milestone-empty-back.png')
+		emptyCardPath: path.join(MISC_OUTPUT_DIR, 'milestone-empty.png')
 	},
 	{
 		key: 'features',
@@ -145,9 +147,19 @@ async function main() {
 
 		const layout = buildLayout(group);
 		const fillerFactory = createEmptyCardFactory(group);
-		const batches = chunk(cards, layout.cardsPerSheet).map((batch) => padBatch(batch, layout.cardsPerSheet, fillerFactory));
-		if (fillerFactory) {
-			for (let extra = 0; extra < EXTRA_EMPTY_SHEETS; extra++) {
+		const fillerScope = group.fillerScope || 'all';
+		const extraEmptySheets = group.extraEmptySheets ?? EXTRA_EMPTY_SHEETS;
+		const chunkedBatches = chunk(cards, layout.cardsPerSheet);
+		const batches = chunkedBatches.map((batch, batchIndex) => {
+			if (!fillerFactory || batch.length >= layout.cardsPerSheet) {
+				return batch;
+			}
+			const shouldPad =
+				fillerScope === 'all' || (fillerScope === 'first-only' && batchIndex === 0);
+			return shouldPad ? padBatch(batch, layout.cardsPerSheet, fillerFactory) : batch;
+		});
+		if (fillerFactory && extraEmptySheets > 0) {
+			for (let extra = 0; extra < extraEmptySheets; extra++) {
 				batches.push(createFullFillerBatch(layout.cardsPerSheet, fillerFactory));
 			}
 		}

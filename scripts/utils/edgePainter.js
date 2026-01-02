@@ -7,23 +7,12 @@ const EDGE_DEFINITIONS = [
 	{ key: 'West edge', position: 'west' }
 ];
 
-function paintEdgesAndDividers(ctx, record = {}, options = {}) {
-	const { edgeColorOverride } = options;
+function paintEdgesAndDividers(ctx, record = {}) {
 	EDGE_DEFINITIONS.forEach(({ key, position }) => {
 		const value = (record[key] || '').trim();
-		if (edgeColorOverride) {
-			drawEdgeBackground(ctx, position, edgeColorOverride);
-		} else if (value) {
+		if (value) {
 			drawConnector(ctx, position, value);
 		}
-	});
-}
-
-function drawEdgeBackground(ctx, position, color) {
-	const rect = edgeRect(position);
-	withEdgeClip(ctx, position, () => {
-		ctx.fillStyle = color;
-		ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
 	});
 }
 
@@ -150,21 +139,6 @@ function createEdgePath(ctx, position) {
 			break;
 		default:
 			throw new Error(`Unknown edge position for clip path: ${position}`);
-	}
-}
-
-function edgeRect(position) {
-	switch (position) {
-		case 'north':
-			return { x: 0, y: 0, width: CARD_SIZE, height: EDGE_THICKNESS };
-		case 'south':
-			return { x: 0, y: CARD_SIZE - EDGE_THICKNESS, width: CARD_SIZE, height: EDGE_THICKNESS };
-		case 'east':
-			return { x: CARD_SIZE - EDGE_THICKNESS, y: 0, width: EDGE_THICKNESS, height: CARD_SIZE };
-		case 'west':
-			return { x: 0, y: 0, width: EDGE_THICKNESS, height: CARD_SIZE };
-		default:
-			throw new Error(`Unknown edge position: ${position}`);
 	}
 }
 

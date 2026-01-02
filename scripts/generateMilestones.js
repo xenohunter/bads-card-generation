@@ -80,8 +80,7 @@ async function drawMilestoneFront(filePath, record, options = {}) {
 	const ctx = canvas.getContext('2d');
 	const isBlank = options.blank === true || record.__blank === true;
 	paintBackground(ctx);
-	const edgeOptions = isBlank ? { edgeColorOverride: '#ffffff' } : undefined;
-	paintEdgesAndDividers(ctx, record, edgeOptions);
+	paintEdgesAndDividers(ctx, record);
 	paintCopy(ctx, record, { isBlank });
 	await fs.writeFile(filePath, canvas.toBuffer('image/png'));
 }

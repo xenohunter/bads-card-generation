@@ -5,7 +5,8 @@ const fs = require('fs/promises');
 require('./utils/fontRegistry'); // Register fonts
 const { drawFeatureCard } = require('./generateFeatures');
 const { drawAbilityCard } = require('./generateAbilities');
-const { drawMilestoneFront, drawMilestoneBack } = require('./generateMilestones');
+const { drawKeystoneFront } = require('./generateKeystones');
+const { drawMilestoneFront } = require('./generateMilestones');
 const { drawRoleCard } = require('./generateRoles');
 const { drawTicketCard } = require('./generateTickets');
 const { drawProblemCard } = require('./generateProblems');
@@ -16,13 +17,13 @@ async function main() {
 	await fs.mkdir(miscDir, { recursive: true });
 
 	const templates = [
-		{ file: 'feature-empty.png', task: () => drawFeatureCard(path.join(miscDir, 'feature-empty.png'), createFeatureRecord(), { blank: true }) },
-		{ file: 'ability-empty.png', task: () => drawAbilityCard(path.join(miscDir, 'ability-empty.png'), createAbilityRecord(), { blank: true }) },
-		{ file: 'milestone-empty-front.png', task: () => drawMilestoneFront(path.join(miscDir, 'milestone-empty-front.png'), createMilestoneRecord(), { blank: true }) },
-		{ file: 'milestone-empty-back.png', task: () => drawMilestoneBack(path.join(miscDir, 'milestone-empty-back.png'), createMilestoneRecord(), { blank: true }) },
-		{ file: 'role-empty.png', task: () => drawRoleCard(path.join(miscDir, 'role-empty.png'), createRoleRecord(), { blank: true }) },
-		{ file: 'ticket-empty.png', task: () => drawTicketCard(path.join(miscDir, 'ticket-empty.png'), createTicketRecord(), { blank: true }) },
-		{ file: 'problem-empty.png', task: () => drawProblemCard(path.join(miscDir, 'problem-empty.png'), createProblemRecord(), { blank: true }) }
+		{ task: () => drawFeatureCard(path.join(miscDir, 'feature-empty.png'), createFeatureRecord(), { blank: true }) },
+		{ task: () => drawAbilityCard(path.join(miscDir, 'ability-empty.png'), createAbilityRecord(), { blank: true }) },
+		{ task: () => drawKeystoneFront(path.join(miscDir, 'keystone-empty.png'), createKeystoneRecord(), { blank: true }) },
+		{ task: () => drawMilestoneFront(path.join(miscDir, 'milestone-empty.png'), createMilestoneRecord(), { blank: true }) },
+		{ task: () => drawRoleCard(path.join(miscDir, 'role-empty.png'), createRoleRecord(), { blank: true }) },
+		{ task: () => drawTicketCard(path.join(miscDir, 'ticket-empty.png'), createTicketRecord(), { blank: true }) },
+		{ task: () => drawProblemCard(path.join(miscDir, 'problem-empty.png'), createProblemRecord(), { blank: true }) }
 	];
 
 	await Promise.all(templates.map((template) => template.task()));
@@ -38,23 +39,23 @@ function createFeatureRecord() {
 		'Text': '',
 		Text: '',
 		'Score Points': '',
-		'North edge': 'A',
-		'East edge': 'B',
-		'South edge': 'C',
-		'West edge': 'A',
+		'North edge': '-',
+		'East edge': '-',
+		'South edge': '-',
+		'West edge': '-',
 		__blank: true
 	};
 }
 
-function createAbilityRecord() {
+function createKeystoneRecord() {
 	return {
 		Title: '',
 		Text: '',
 		'Funny text': '',
-		'North edge': 'A',
-		'East edge': 'B',
-		'South edge': 'C',
-		'West edge': 'A',
+		'North edge': '-',
+		'East edge': '-',
+		'South edge': '-',
+		'West edge': '-',
 		__blank: true
 	};
 }
@@ -67,10 +68,19 @@ function createMilestoneRecord() {
 		'ACF': 0,
 		'Minimum Score': 0,
 		Deadline: '',
-		'North edge': 'A',
-		'East edge': 'B',
-		'South edge': 'C',
-		'West edge': 'A',
+		'North edge': '-',
+		'East edge': '-',
+		'South edge': '-',
+		'West edge': '-',
+		__blank: true
+	};
+}
+
+function createAbilityRecord() {
+	return {
+		Title: '',
+		Text: '',
+		'Funny text': '',
 		__blank: true
 	};
 }

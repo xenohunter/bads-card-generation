@@ -59,8 +59,7 @@ async function drawFeatureCard(filePath, record, options = {}) {
 			paintScoreWatermark(ctx, watermarkScore);
 		}
 	}
-	const edgeOptions = isBlank ? { edgeColorOverride: '#ffffff' } : undefined;
-	paintEdgesAndDividers(ctx, record, edgeOptions);
+	paintEdgesAndDividers(ctx, record);
 	paintFeatureContent(ctx, record, { isBlank });
 
 	await fs.writeFile(filePath, canvas.toBuffer('image/png'));
