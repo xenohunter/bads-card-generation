@@ -6,7 +6,14 @@ const fsSync = require('fs');
 const { createCanvas, loadImage } = require('canvas');
 require('./utils/fontRegistry'); // Register fonts
 const PDFDocument = require('pdfkit');
-const { CARD_SIZE, ROLE_CARD_WIDTH, ROLE_CARD_HEIGHT, TICKET_CARD_SIZE, KEYSTONE_BACK_FILE_NAME } = require('./utils/constants');
+const {
+	CARD_SIZE,
+	ROLE_CARD_WIDTH,
+	ROLE_CARD_HEIGHT,
+	TICKET_CARD_SIZE,
+	KEYSTONE_BACK_FILE_NAME,
+	MILESTONE_BACK_FILE_NAME
+} = require('./utils/constants');
 const { resolveOutputPath, LOCALE } = require('./utils/runtimeConfig');
 
 const PRINT_DPI = 300;
@@ -25,6 +32,7 @@ const DEFAULT_GAP = 1;
 const EXTRA_EMPTY_SHEETS = 1;
 const MISC_OUTPUT_DIR = resolveOutputPath('misc');
 const KEYSTONE_BACK_PATH = path.join(MISC_OUTPUT_DIR, KEYSTONE_BACK_FILE_NAME);
+const MILESTONE_BACK_PATH = path.join(MISC_OUTPUT_DIR, MILESTONE_BACK_FILE_NAME);
 
 const PLAYER_CARD_SIZE_MM = 85;
 const WORK_CARD_SIZE_MM = 78;
@@ -52,7 +60,7 @@ const PRINT_SETS = [
 		cardHeight: CARD_SIZE,
 		printWidthMM: PLAYER_CARD_SIZE_MM,
 		printHeightMM: PLAYER_CARD_SIZE_MM,
-		backStrategy: { type: 'pairedPrefix', prefix: 'back-' },
+		backStrategy: { type: 'staticImage', path: MILESTONE_BACK_PATH },
 		emptyCardPath: path.join(MISC_OUTPUT_DIR, 'milestone-empty-front.png'),
 		emptyCardBackPath: path.join(MISC_OUTPUT_DIR, 'milestone-empty-back.png')
 	},

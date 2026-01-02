@@ -2,10 +2,16 @@
 const path = require('path');
 const fs = require('fs/promises');
 const { PROJECT_ROOT } = require('./utils/runtimeConfig');
+const { KEYSTONE_BACK_FILE_NAME, MILESTONE_BACK_FILE_NAME } = require('./utils/constants');
 
 const PUBLIC_ROOT = path.join(PROJECT_ROOT, 'public');
 const TIMESTAMP = createTimestamp();
-const MISC_DECK_KEYS = new Set(['player-deck', 'work-deck']);
+const MISC_DECK_KEYS = new Set([
+	'player-deck',
+	'work-deck',
+	path.parse(KEYSTONE_BACK_FILE_NAME).name,
+	path.parse(MILESTONE_BACK_FILE_NAME).name
+]);
 const LOCALE_SOURCES = [
 	{ code: 'en', outputRoot: path.join(PROJECT_ROOT, 'outputs') },
 	{ code: 'ru', outputRoot: path.join(PROJECT_ROOT, 'outputs_ru') }

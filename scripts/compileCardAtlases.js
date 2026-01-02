@@ -4,7 +4,14 @@ const path = require('path');
 const fs = require('fs/promises');
 const { createCanvas, loadImage } = require('canvas');
 require('./utils/fontRegistry'); // Register fonts
-const { CARD_SIZE, ROLE_CARD_WIDTH, ROLE_CARD_HEIGHT, TICKET_CARD_SIZE, KEYSTONE_BACK_FILE_NAME } = require('./utils/constants');
+const {
+	CARD_SIZE,
+	ROLE_CARD_WIDTH,
+	ROLE_CARD_HEIGHT,
+	TICKET_CARD_SIZE,
+	KEYSTONE_BACK_FILE_NAME,
+	MILESTONE_BACK_FILE_NAME
+} = require('./utils/constants');
 const { resolveOutputPath, LOCALE } = require('./utils/runtimeConfig');
 
 const ATLAS_COLUMNS = 10;
@@ -28,8 +35,8 @@ const CARD_GROUPS = [
 	{
 		label: 'Milestone backs',
 		prefix: 'milestone-backs',
-		dir: resolveOutputPath('milestones'),
-		filter: (name) => name.startsWith('back-') && name.endsWith('.png'),
+		dir: resolveOutputPath('misc'),
+		filter: (name) => name === MILESTONE_BACK_FILE_NAME,
 		cardWidth: CARD_SIZE,
 		cardHeight: CARD_SIZE
 	},
