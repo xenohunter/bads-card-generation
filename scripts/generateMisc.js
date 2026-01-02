@@ -53,11 +53,6 @@ function paintCardBack(ctx, card, width, height) {
 	ctx.font = `800 ${labelSize}px "Montserrat", "Noto Color Emoji", sans-serif`;
 	drawLabel(ctx, card, width, height, labelSize);
 
-	if (card.key === 'role') {
-		ctx.fillStyle = `${(card.textColor || BODY_TEXT_COLOR)}14`;
-		const inset = EDGE_THICKNESS + 30;
-		ctx.fillRect(inset, EDGE_THICKNESS + 20, width - inset * 2, height - (EDGE_THICKNESS + 20) * 2);
-	}
 }
 
 function drawLabel(ctx, card, width, height, labelSize) {

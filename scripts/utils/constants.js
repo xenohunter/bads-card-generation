@@ -42,7 +42,6 @@ const TICKET_DIRECTIVE_COLORS = {
 	action: '#b7791f'
 };
 const MISC_CARD_TYPES = [
-	{ key: 'role', label: 'Role', background: '#dceeff', textColor: '#0c356b', width: ROLE_CARD_WIDTH, height: ROLE_CARD_HEIGHT },
 	{ key: 'player-deck', label: 'Player Deck', background: '#fff6cf' },
 	{ key: 'work-deck', label: 'Work Deck', background: '#ffe0df', width: TICKET_CARD_SIZE, height: TICKET_CARD_SIZE }
 ];

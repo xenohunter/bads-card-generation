@@ -94,13 +94,14 @@ const PRINT_SETS = [
 		key: 'roles',
 		label: 'Roles',
 		frontDir: resolveOutputPath('roles'),
-		filter: (name) => name.endsWith('.png'),
+		filter: (name) => name.endsWith('.png') && !name.startsWith('back-'),
 		cardWidth: ROLE_CARD_WIDTH,
 		cardHeight: ROLE_CARD_HEIGHT,
 		printWidthMM: ROLE_CARD_WIDTH_MM,
 		printHeightMM: ROLE_CARD_HEIGHT_MM,
-		backStrategy: { type: 'staticImage', path: path.join(MISC_OUTPUT_DIR, 'role.png') },
-		emptyCardPath: path.join(MISC_OUTPUT_DIR, 'role-empty.png')
+		backStrategy: { type: 'pairedPrefix', prefix: 'back-' },
+		emptyCardPath: path.join(MISC_OUTPUT_DIR, 'role-empty.png'),
+		resolveEmptyCardBackPath: resolveRoleEmptyBackPath
 	},
 	{
 		key: 'tickets',
@@ -128,6 +129,26 @@ const PRINT_SETS = [
 	}
 ];
 
+async function resolveRoleEmptyBackPath() {
+	const roleDir = resolveOutputPath('roles');
+	let entries;
+	try {
+		entries = await fs.readdir(roleDir);
+	} catch (error) {
+		if (error.code === 'ENOENT') {
+			throw new Error('Cannot resolve a role back for empty fillers because no role outputs were found. Run the role generator first.');
+		}
+		throw error;
+	}
+	const candidates = entries
+		.filter((name) => name.startsWith('back-') && name.endsWith('.png'))
+		.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+	if (!candidates.length) {
+		throw new Error('No role back images were found to pair with empty role fillers.');
+	}
+	return path.join(roleDir, candidates[0]);
+}
+
 const imageCache = new Map();
 
 async function main() {
@@ -146,7 +167,7 @@ async function main() {
 		}
 
 		const layout = buildLayout(group);
-		const fillerFactory = createEmptyCardFactory(group);
+		const fillerFactory = await createEmptyCardFactory(group);
 		const fillerScope = group.fillerScope || 'all';
 		const extraEmptySheets = group.extraEmptySheets ?? EXTRA_EMPTY_SHEETS;
 		const chunkedBatches = chunk(cards, layout.cardsPerSheet);
@@ -336,7 +357,7 @@ function createFullFillerBatch(count, fillerFactory) {
 	return result;
 }
 
-function createEmptyCardFactory(group) {
+async function createEmptyCardFactory(group) {
 	if (!group.emptyCardPath) {
 		return null;
 	}
@@ -344,9 +365,12 @@ function createEmptyCardFactory(group) {
 	const frontPath = group.emptyCardPath;
 	let backPath = group.emptyCardBackPath;
 
-	assertFileSync(frontPath, `Missing empty card template for ${group.label} at ${frontPath}`);
+	await assertFile(frontPath, `Missing empty card template for ${group.label} at ${frontPath}`);
+	if (!backPath && typeof group.resolveEmptyCardBackPath === 'function') {
+		backPath = await group.resolveEmptyCardBackPath();
+	}
 	if (backPath) {
-		assertFileSync(backPath, `Missing empty card back template for ${group.label} at ${backPath}`);
+		await assertFile(backPath, `Missing empty card back template for ${group.label} at ${backPath}`);
 	}
 
 	if (!backPath) {
@@ -358,14 +382,6 @@ function createEmptyCardFactory(group) {
 	}
 
 	return () => ({ frontPath, backPath, isFiller: true });
-}
-
-function assertFileSync(targetPath, message) {
-	try {
-		fsSync.accessSync(targetPath, fsSync.constants.R_OK);
-	} catch (error) {
-		throw new Error(message);
-	}
 }
 
 async function renderSheetPair(batch, layout) {
